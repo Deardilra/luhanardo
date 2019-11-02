@@ -83,6 +83,7 @@ int main()
             break;
             case 2:
             printf("Heart");
+            break;
             default:
             printf("Spade");
         }
@@ -113,7 +114,7 @@ int main()
         printf("Player point: %f\n",player_point);
 
         /*Do the calculation*/
-        if((com_point>7&&player_point>7) && (com_point<10.5&&player_point<10.5)) //一開始 + 後來大於7小於10.5的
+        if((com_point>7 && player_point>7) && (com_point<10.5 && player_point<10.5)) //一開始 + 後來大於7小於10.5的
         {
             printf("choose(1/2):\n");
             scanf("%d",&choose);
@@ -144,12 +145,14 @@ int main()
             }
             else
             {
-                printf("choose(1/2):\n");
-                scanf("%d",&choose);
-                if(choose==2)
+                if(com_point<10.5 && player_point<10.5)
                 {
-                    if(com_point<10.5 && player_point<10.5)
+                    printf("choose(1/2):\n");
+                    scanf("%d",&choose);
+                    if(choose==2)
                     {
+                        if(com_point<10.5 && player_point<10.5)
+                        {
                         if(com_point > player_point)
                         {
                             printf("player win\n");
@@ -160,11 +163,12 @@ int main()
                             printf("computer win\n");
                             break;
                         }
+                        }
                     }
-                }
-                if(choose==1)
-                {
-                    round++;
+                    if(choose==1)
+                    {
+                        round++;
+                    }
                 }
             }
         }
@@ -203,3 +207,8 @@ int main()
     system("pause");
     return 0;
 }
+
+
+
+
+
