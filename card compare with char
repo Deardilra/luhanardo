@@ -1,0 +1,159 @@
+/*z發牌把牌用char方式去呈現*/
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+    /*Variables*/
+    srand(time(NULL));
+    int N;
+    char num_1,num_2;
+    char com_num1,com_num2;
+    int R,T;
+
+    /*read file*/
+    FILE*output;
+    FILE*input;
+    output=fopen("card.txt","w");
+
+    /*establish cards*/
+    N=rand()%52;
+    R=N/13;
+    T=N%13;
+    switch(R)
+    {
+        case 0:
+            {
+            fprintf(output,"C");
+            break;
+            }
+        case 1:
+            {
+               fprintf(output,"D");
+                break;
+            }
+        case 2:
+            {
+                fprintf(output,"H");
+                break;
+            }
+        case 3:
+            {
+                fprintf(output,"S");
+                break;
+            }
+        default :
+            {
+                break;
+            }
+    }
+
+    switch(T)
+    {
+        case 0:
+        {
+            fprintf(output,"A");
+            break;
+        }
+        case 9:
+        {
+            fprintf(output,"T");
+            break;
+        }
+        case 10:
+        {
+            fprintf(output,"J");
+            break;
+        }
+        case 11:
+        {
+            fprintf(output,"Q");
+            break;
+        }
+        case 12:
+        {
+            fprintf(output,"K");
+            break;
+        }
+        default:
+        {
+            fprintf(output,"%d",N%13+1);
+        }
+    }
+    fclose(output);
+    system("pause");
+    /*compare*/
+    input=fopen("card.txt","r");
+    fscanf(input,"%c%c",&num_1,&num_2);
+    printf("Please input the card:");
+    scanf("%c%c",&com_num1,&com_num2);
+    printf("The reference card:%c%c\n",num_1,num_2); //in char, characters are loaded in ASCII, which means numbers.
+
+    /*Compute*/
+    if(com_num2==num_2 && com_num1==num_1)
+    {
+        printf("Bingo!");
+        return 0;
+
+    }
+    if(com_num2==num_2)
+    {
+        if(com_num1 > num_1)
+        {
+            printf("Too big");
+            return 0;
+        }
+        else if(com_num1 < num_1)
+        {
+            printf("Too small");
+            return 0;
+        }
+    }
+    if(com_num2=='T')
+    {
+        if(num_2=='J' || num_2=='Q' || num_2=='K')
+        {
+            printf("Too small");
+        }
+        else
+        {
+            printf("Too big");
+        }
+    }
+    if(com_num2=='J')
+    {
+        if(num_2=='Q' || num_2=='K')
+        {
+            printf("Too small");
+        }
+        else
+        {
+            printf("Too big");
+        }
+    }
+    if(com_num2=='Q')
+    {
+        if(num_2=='K')
+        {
+            printf("Too small");
+        }
+        else
+        {
+            printf("Too big");
+        }
+    }
+    if(com_num2=='K')
+    {
+        printf("Too big");
+    }
+    if(com_num2 > com_num1)
+    {
+        printf("Too big");
+    }
+    else
+    {
+        printf("Too small");
+    }
+    system("pause");
+    return 0;
+}
