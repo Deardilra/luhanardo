@@ -1,0 +1,49 @@
+/*How to calculate prime numbers*/
+#include<stdlib.h>
+#include<stdio.h>
+int main()
+{
+    /*Open file and read file*/
+    FILE*input;
+    input=fopen("random.txt","r");
+
+    /*Variables*/
+    int number,status;
+    int max=0,mini=32767;
+    int total=0;
+    int detect;
+    int i;
+
+    /*Compute with EOF*/
+    status=fscanf(input,"%d",&number);
+    printf("The prime number is:");
+    while(status != EOF)
+    {
+        for(i=2;i<number;i++)
+        {
+            if(number%i==0)
+            {
+                break;
+            }
+        }
+        if(i >= number) //Mean when should print, if no then can't decide
+        {
+            printf("%d\n",number);
+            total++;
+            if(number > max)
+            {
+                max=number;
+            }
+            if(mini > number)
+            {
+                mini=number;
+            }
+        }
+        status=fscanf(input,"%d",&number);
+    }
+    printf("The maximum number is:%d\n",max);
+    printf("The minimum number is:%d\n",mini);
+    printf("Total prime numbers:%d\n",total);
+    system("pause");
+    return 0;
+}
