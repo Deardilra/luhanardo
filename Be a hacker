@@ -8,7 +8,7 @@ int main()
 {
     /*Open file*/
     FILE*input;
-    input=fopen("password.txt","r");
+    input=fopen("password.txt","r"); //open file first
 
     /*Variables*/
     int number;
@@ -23,7 +23,7 @@ int main()
     {
         printf("The number:%d\n",number);
         printf("The changed number:");
-        com=1000000;
+        com=1000000;                  //remember to reset
         for(int i=0;i<7;i++)
         {
             num[i]=((number/com)+3)%10;
@@ -33,7 +33,7 @@ int main()
         }
         status=fscanf(input,"%d",&number);
     }
-    fclose(input);
+    fclose(input); //remember to close file
     system("pause");
     return 0;
 }
