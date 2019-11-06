@@ -1,214 +1,219 @@
-/*408415075 10點半*/
+/*10.5 points*/
+
+/*For infinite loop will continuosly run again while 
+loop run to the last line, and thus we don't need to
+write again choose==1 then run again*/
+and th
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
 int main()
 {
-    srand(time(NULL));
+    /*Variables*/
     int player,computer;
-    float player_point=0;
-    float com_point=0;
-    int card_num[52];
-    int check[52]={0};
-    int i=0,round=0;
-    int choose;
+    float player_point=0,com_point=0; //flaot=%f, double=%lf, int=%d char=%c
+    int card[52],check[52]={0};
+    int round,i,choose;
 
     /*Give 52 cards*/
-    i=0;
-    while(i<52)
+    srand(time(NULL));
+    for(i=0;i<52;i++)
     {
-        card_num[i]=rand()%52;//0-51
-        if(check[card_num[i]]==0)
+        card[i]=rand()%52;
+        if(check[card[i]]==0)
         {
-            check[card_num[i]==1];
-            i++;
+            check[card[i]]=1;
         }
     }
 
-    /*Give player and computer card*/
-    for(round=0;;)
+
+    for(round=0;;round++)
     {
-        printf("round %d\n",round+1);
-        printf("Computer's card:");
-        computer=card_num[round*2];
-        /*Display the computer card*/
-        switch(card_num[round*2]/13)
+        printf("Round %d\n",round+1);
+        /*Give player card*/
+        printf("Player card:");
+        player=card[2*round];
+        switch(card[2*round]/13)
         {
-            case 0:
-            printf("Club");
-            break;
-            case 1:
-            printf("Diamond");
-            break;
-            case 2:
-            printf("Heart");
-            break;
-            default:
-            printf("Spade");
-        }
-
-        switch(card_num[round*2]%13)
-        {
-            case 0:
-            printf("A\n");
-            com_point+=1;
-            break;
-            case 10:
-            printf("J\n");
-            com_point+=0.5;
-            break;
-            case 11:
-            printf("Q\n");
-            com_point+=0.5;
-            break;
-            case 12:
-            printf("K\n");
-            com_point+=0.5;
-            break;
-            default:
-            printf("%d\n",card_num[round*2]%13+1);
-            com_point+=card_num[round*2]%13+1;
-        }
-
-        /*Display the player card*/
-        printf("Player's card:");
-        player=card_num[(round*2)+1];
-        switch(card_num[round*2+1]/13)
-        {
-            case 0:
-            printf("Club");
-            break;
-            case 1:
-            printf("Diamond");
-            break;
-            case 2:
-            printf("Heart");
-            break;
-            default:
-            printf("Spade");
-        }
-
-        switch(card_num[(round*2)+1]%13)
-        {
-            case 0:
-            printf("A\n");
-            player_point+=1;
-            break;
-            case 10:
-            printf("J\n");
-            player_point+=0.5;
-            break;
-            case 11:
-            printf("Q\n");
-            player_point+=0.5;
-            break;
-            case 12:
-            printf("K\n");
-            player_point+=0.5;
-            break;
-            default:
-            printf("%d\n",card_num[(round*2)+1]%13+1);
-            player_point+=card_num[(round*2)+1]%13+1;
-        }
-        printf("Computer point: %f\n",com_point);
-        printf("Player point: %f\n",player_point);
-
-        /*Do the calculation*/
-        if((com_point>7 && player_point>7) && (com_point<10.5 && player_point<10.5)) //一開始 + 後來大於7小於10.5的
-        {
-            printf("choose(1/2):\n");
-            scanf("%d",&choose);
-            if(choose==1)
+        case 0:
             {
-                round++;
+                printf("Spade");
+                break;
+            }
+        case 1:
+            {
+                printf("Heart");
+                break;
+            }
+        case 2:
+            {
+                printf("Diamond");
+                break;
+            }
+        default:
+            {
+                printf("Club");
+            }
+        }
+
+       /*Compute points*/
+        switch(card[2*round]%13)
+        {
+        case 1:
+            {
+                printf("A\n");
+                player_point+=1;
+                break;
+            }
+        case 10:
+            {
+             printf("J\n");
+             player_point+=0.5;
+             break;
+            }
+        case 11:
+            {
+                printf("Q\n");
+                player_point+=0.5;
+                break;
+            }
+        case 12:
+            {
+                printf("K\n");
+                player_point+=0.5;
+                break;
+            }
+        default:
+            {
+                printf("%d\n",card[2*round]%13+1);
+                player_point+=card[2*round]%13+1;
+            }
+        }
+
+        /*Give compter card*/
+        printf("Computer card:");
+        computer=card[2*round+1];
+        switch(card[2*round+1]/13)
+        {
+        case 0:
+            {
+                printf("Spade");
+                break;
+            }
+        case 1:
+            {
+                printf("Heart");
+                break;
+            }
+        case 2:
+            {
+                printf("Diamond");
+                break;
+            }
+        default:
+            {
+                printf("Club");
+            }
+        }
+
+        /*Compute the point*/
+        switch(card[2*round+1]%13)
+        {
+        case 1:
+            {
+                printf("A\n");
+                com_point+=1;
+                break;
+            }
+        case 10:
+            {
+             printf("J\n");
+             com_point+=0.5;
+             break;
+            }
+        case 11:
+            {
+                printf("Q\n");
+                com_point+=0.5;
+                break;
+            }
+        case 12:
+            {
+                printf("K\n");
+                com_point+=0.5;
+                break;
+            }
+        default:
+            {
+                printf("%d\n",card[2*round+1]%13+1);
+                com_point+=card[2*round+1]%13+1;
+            }
+        }
+        printf("Player point:%f\n",player_point);
+        printf("Computer point:%f\n",com_point);
+
+        if(com_point < 7 || player_point < 7)
+        {
+            if(com_point < 7 && player_point > 10.5)
+            {
+                printf("computer win\n");
+                return 0;
+            }
+            else if(player_point < 7 && com_point > 10.5)
+            {
+                printf("player win\n");
+                return 0;
+            }
+            if(com_point == 10.5 && player_point != 10.5)
+            {
+                printf("computer win\n");
+                return 0;
+            }
+            else if(player_point == 10.5 && com_point != 10.5)
+            {
+                printf("player win\n");
+                return 0;
+            }
+        }
+        else
+        {
+            if(com_point < 10.5 && player_point < 10.5)
+            {
+                printf("Choose(1/2):\n");
+                scanf("%d",&choose);
+            }
+              /*Choose or not, first decide > 10.5*/
+            if(player_point > 10.5)
+            {
+                printf("computer win");
+                return 0;
+            }
+            else if(com_point > 10.5)
+            {
+                printf("player win");
+                return 0;
             }
             if(choose==2)
             {
-                if(player_point<com_point)
-                {
-                    printf("computer win\n");
-                    break;
-                }
-                if(player_point>com_point)
+                if(player > computer)
                 {
                     printf("player win\n");
-                    break;
+                    return 0;
+                }
+                else if(player < computer)
+                {
+                    printf("computer win");
+                    return 0;
+                }
+                else
+                {
+                    printf("tie");
+                    return 0;
                 }
             }
         }
 
-        if(com_point<7||player_point<7)//一開始小於7 + 後來小於7但不比了
-        {
-            if(round==0)
-            {
-                round++;
-            }
-            else
-            {
-                if(com_point<10.5 && player_point<10.5)
-                {
-                    printf("choose(1/2):\n");
-                    scanf("%d",&choose);
-                    if(choose==2)
-                    {
-                        if(com_point<10.5 && player_point<10.5)
-                        {
-                        if(com_point > player_point)
-                        {
-                            printf("player win\n");
-                            break;
-                        }
-                        else
-                        {
-                            printf("computer win\n");
-                            break;
-                        }
-                        }
-                    }
-                    if(choose==1)
-                    {
-                        round++;
-                    }
-                }
-            }
-        }
-        if(com_point>10.5 || player_point>10.5) //一開始 + 後來就大於 直接分勝負
-        {
-            if(player_point>10.5 && com_point<10.5)
-            {
-                printf("computer win\n");
-                break;
-            }
-            if(com_point>10.5 && player_point<10.5)
-            {
-                printf("player win\n");
-                break;
-            }
-            if(com_point>10.5 && player_point>10.5)
-            {
-                printf("computer win\n");
-                break;
-            }
-        }
-        if(com_point==10.5 || player_point==10.5)
-        {
-            if(com_point==10.5 && player_point!=10.5)
-            {
-                printf("computer win");
-                break;
-            }
-            if(player_point==10.5 && com_point!= 10.5)
-            {
-                printf("player win");
-                break;
-            }
-        }
     }
     system("pause");
     return 0;
 }
-
-
-
-
-
