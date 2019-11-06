@@ -1,4 +1,4 @@
-/*z發牌把牌用char方式去呈現*/
+/*發牌把牌用char方式去呈現*/
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
