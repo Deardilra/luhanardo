@@ -1,0 +1,293 @@
+/* middle exam 2019/11/06 */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main()
+{
+    srand(time(NULL));
+    int j,num,round;
+    int a=0,b=0,c=0,d=0;
+    int q,w;  //player and computer pair point
+
+    /*player's and computer's card*/
+    int player[5]={0}, computer[5]={0};
+    /*player's and computer's point*/
+    int player_point = 0, com_point = 0;
+    /*player's and computer's weights point*/
+    int player_w_point = 0, com_w_point = 0;
+    int com_addpoint=0,player_addpoint=0;
+
+    int card_num[54]={0};     // card number
+    int card[54]={0};
+    int check[54] = {0};  // record the card used
+
+    FILE* output,*input;
+    output=fopen("deck_card.txt","w");
+
+    int i=0;
+    while (i < 54)
+    {
+        card_num[i] = rand() % 54;
+        if (check[card_num[i]]==0)
+        {
+            check[card_num[i]]=1;
+            i++;
+        }
+     }
+    for(i=0;i<54;i++)
+    {
+        fprintf(output,"%d\n",card_num[i]+1);
+    }
+    fclose(output);
+
+//////////////read card//////////////////
+    input = fopen("deck_card.txt","r");
+    i=0;
+    while(fscanf(input,"%d",&num) != EOF && i<55)
+    {
+        card_num[i] = num;
+        i++;
+    }
+//////////////display computer's card//////////////////
+    for(round=1;round<6;round++)
+    {
+        printf("\nRound %d\n",round);
+        computer[round-1]=card_num[(round-1)*2  ];
+        player[round-1]  =card_num[(round-1)*2+1];
+
+        printf("computer's card:");
+            if (computer[round-1]==53)
+            {
+                printf("Ghost1 ");
+                com_point=0;
+                c++;
+            }
+            else if(computer[round-1]==54)
+            {
+                printf("Ghost2 ");
+                com_point=0;
+                c++;
+            }
+            else
+            {
+                switch(computer[round-1] % 4)
+                {
+                    case 0:  printf("C");    break;
+                    case 1:  printf("S");    break;
+                    case 2:  printf("H");    break;
+                    default: printf("D");
+                }
+                switch((computer[round-1]-1)/4)
+                {
+                    case 0:  printf("A  \n");       break;
+                    case 10: printf("J  \n");       break;
+                    case 11: printf("Q  \n");       break;
+                    case 12: printf("K  \n");       break;
+                    default: printf("%d \n",(computer[round-1]-1)/4+1);
+                }
+                /*compute the point */
+                switch(computer[round-1] % 4)
+                {
+                    case 0:   com_point=((computer[round-1]-1)/4)*1;    break;
+                    case 1:   com_point=((computer[round-1]-1)/4)*4;    break;
+                    case 2:   com_point=((computer[round-1]-1)/4)*3;    break;
+                    default:  com_point=((computer[round-1]-1)/4)*2;
+                }
+            }
+            com_addpoint=com_addpoint+com_point;
+
+            /*判斷有沒有對子*/
+            for (i=0;i<round-1;i++)
+            {
+                for(j=i+1;j<round;j++)
+                {
+                    if (((computer[i])/4) == ((computer[j])/4))
+                    {
+                        a++;
+                        switch(computer[i] % 4)
+                        {
+                           case 0:    w=(((computer[i]-1)/4)+1)*1;    break;
+                           case 1:    w=(((computer[i]-1)/4)+1)*4;    break;
+                           case 2:    w=(((computer[i]-1)/4)+1)*3;    break;
+                           default:   w=(((computer[i]-1)/4)+1)*2;
+                        }
+                        switch(computer[j] % 4)
+                        {
+                           case 0:    w=w+(((computer[j]-1)/4)+1)*1;    break;
+                           case 1:    w=w+(((computer[j]-1)/4)+1)*4;    break;
+                           case 2:    w=w+(((computer[j]-1)/4)+1)*3;    break;
+                           default:   w=w+(((computer[j]-1)/4)+1)*2;
+                        }
+                        break;
+                    }
+                }
+            }
+//////////////display player's card////////////////////////
+            printf("player's card:\t");
+            if ( player[round-1]==53)
+            {
+                printf("Ghost1 ");
+                player_point=0;
+                d++;
+            }
+            else if( player[round-1]==54)
+            {
+                printf("Ghost2 ");
+                player_point=0;
+                d++;
+            }
+            else
+            {
+                switch(player[round-1] % 4)
+                {
+                    case 0:  printf("C");    break;
+                    case 1:  printf("S");    break;
+                    case 2:  printf("H");    break;
+                    default: printf("D");
+                }
+                switch((player[round-1]-1)/4)
+                {
+                    case 0:  printf("A  \n");       break;
+                    case 10: printf("J  \n");       break;
+                    case 11: printf("Q  \n");       break;
+                    case 12: printf("K  \n");       break;
+                    default: printf("%d \n", ((player[round-1]-1)/4)+1);
+                }
+                /*player the point */
+                switch(player[round-1] % 4)
+                {
+                    case 0:    player_point=((player[round-1]-1)/4)*1;    break;
+                    case 1:    player_point=((player[round-1]-1)/4)*4;    break;
+                    case 2:    player_point=((player[round-1]-1)/4)*3;    break;
+                    default:   player_point=((player[round-1]-1)/4)*2;
+                }
+            }
+            player_addpoint=player_addpoint+player_point;
+
+            /*判斷有沒有對子*/
+            for (i=0;i<round-1;i++)
+            {
+                for(j=i+1;j<round;j++)
+                {
+                    if (((player[i]-1)/4) == ((player[j]-1)/4))
+                    {
+                        b++;
+                        switch(player[i] % 4)
+                        {
+                           case 0:    q=(((player[i]-1)/4)+1)*1;    break;
+                           case 1:    q=(((player[i]-1)/4)+1)*4;    break;
+                           case 2:    q=(((player[i]-1)/4)+1)*3;    break;
+                           default:   q=(((player[i]-1)/4)+1)*2;
+                        }
+                        switch(player[j] % 4)
+                        {
+                           case 0:    q=q+(((player[j]-1)/4)+1)*1;    break;
+                           case 1:    q=q+(((player[j]-1)/4)+1)*4;    break;
+                           case 2:    q=q+(((player[j]-1)/4)+1)*3;    break;
+                           default:   q=q+(((player[j]-1)/4)+1)*2;
+                        }
+                        break;
+                    }
+                }
+            }
+            /*判斷電腦有沒有拿到兩張鬼牌*/
+            if(c==2)
+            {
+              printf("\ncomputer win");
+               return 0;
+            }
+            /*判斷玩家有沒有拿到兩張鬼牌*/
+            else if(d==2)
+            {
+              printf("\nplayer win");
+              return 0;
+            }
+            /*玩家和電腦同時拿到對子*/
+            else if(round!=5 && a==1 && b==1)
+            {
+               if ( w > q)
+               {
+                 printf("computer pair point:%d",w);
+                 printf("player pair point:%d",q);
+                 printf("\ncomputer win");
+                 return 0;
+               }
+               else if (w < q)
+               {
+                  printf("computer pair point:%d\n",w);
+                  printf("player pair point:%d",q);
+                  printf("\nplayer win");
+                  return 0;
+               }
+               else
+               {
+                   printf("\nTie");
+                    return 0;
+               }
+            }
+            /*只有電腦拿到對子*/
+            else if(a==1)
+            {
+               printf("\ncomputer win");
+                return 0;
+            }
+            /*只有玩家拿到對子*/
+            else if(b==1)
+            {
+               printf("\nplayer win");
+               return 0;
+            }
+            /*判斷五張都發完但沒有人獲勝時，雙方各自的5張牌相加是否為質數，是的話則總分乘以2*/
+            else if(round==5 && a==0 && b==0)
+            {
+                int i=0,j=0;
+                for(i=2;i<=com_addpoint-1;i++)
+                {
+                    if(com_addpoint % i==0)
+                    {
+                        break;
+                    }
+                }
+                if(i>=com_point)
+                {
+                    com_addpoint=com_addpoint*2;
+                }
+                for(j=2;i<=player_addpoint-1;j++)
+                {
+                    if(player_addpoint % j==0)
+                    {
+                        break;
+                    }
+                }
+                if(j>=player_point)
+                {
+                    player_addpoint=player_addpoint*2;
+                }
+                if(com_addpoint>player_addpoint)
+                {
+                    printf("\ncomputer's point:%d\n",com_addpoint);
+                    printf("player's point:%d\n",player_addpoint);
+                    printf("computer win");
+                }
+                else if(com_addpoint<player_addpoint)
+                {
+                    printf("\ncomputer's point:%d\n",com_addpoint);
+                    printf("player's point:%d\n",player_addpoint);
+                    printf("player win");
+                }
+                else{
+                    printf("\nTie ");
+                }
+            }
+            /*進入下一round*/
+            else
+            {
+                continue;
+            }
+      }
+
+    return 0;
+}
+
