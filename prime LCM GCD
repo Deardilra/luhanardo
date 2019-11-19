@@ -1,0 +1,103 @@
+/*Read data and compute the prime,GCD,LCM*/
+#include<stdio.h>
+#include<stdlib.h>
+int is_prime(int);
+void prime_factorization(int);
+int GCD(int,int);
+int LCM(int,int);
+
+int main()
+{
+    FILE*input;
+    input=fopen("data.txt","r"); //open file
+    int num_1,num_2;
+    while(fscanf(input,"%d%d",&num_1,&num_2) != EOF)
+    {
+        printf("%d %d\n",num_1,num_2);
+        if(is_prime(num_1))
+        {
+            printf("%d is prime.\n",num_1);
+        }
+        else
+        {
+            printf("prime factorization of %d:",num_1);
+            prime_factorization(num_1);
+        }
+        if(is_prime(num_2))
+        {
+            printf("%d is prime.\n",num_2);
+        }
+        else
+        {
+            printf("prime factorization of %d:",num_2);
+            prime_factorization(num_2);
+        }
+
+        printf("GCD of %d %d is:%d\n",num_1,num_2,GCD(num_1,num_2));
+        printf("LCM of %d %d is:%d\n",num_1,num_2,LCM(num_1,num_2));
+    }
+    return 0; //int function while end, return 0
+}
+
+int is_prime(int num)
+{
+    int i;
+    for(i=2;i<=num-1;i++)
+    {
+        if(num%i==0)
+        {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void prime_factorization(int num)
+{
+    int i;
+    int count=1; //depend count how much time
+    for(i=2;i<=num;i++) //the end of loop must be a coparative noun, since i=2;i=sum are meaningless
+    {
+        if(is_prime(i))
+        {
+            if(num%i==0)
+            {
+                if(count != 1)
+                    printf("x%d",i);
+                else
+                    printf("%d",i);
+                    count++;
+                    num=num/i;
+            }
+        }
+    }
+    printf("\n");
+    return;
+}
+
+int GCD(int num_1,int num_2)
+{
+    if(num_1 > 0 && num_2 > 0)
+    {
+        if(num_1 > num_2)
+        {
+             num_1=num_1 % num_2;
+        }
+        if(num_1 < num_2)
+        {
+            num_2=num_2 % num_1;
+        }
+    }
+    if(num_1 == 0)
+    {
+         return num_2;
+    }
+    if(num_2 == 0)
+    {
+         return num_1;
+    }
+}
+int LCM(int num_1,int num_2)
+{
+    return num_1*num_2/GCD(num_1,num_2);
+}
