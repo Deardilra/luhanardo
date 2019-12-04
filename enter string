@@ -1,0 +1,45 @@
+#include<stdio.h>
+void string(char chr[]);
+int str_length(char chr[]);
+void str_read(char chr[]);
+
+int main()
+{
+    char chr[15];
+    printf("please enter your name:");
+    str_read(chr);
+    string(chr);
+    printf("Length:%d",str_length(chr));
+    return 0;
+}
+
+void string(char chr[])
+{
+    printf("%s", chr);
+}
+
+int str_length(char chr[])
+{
+    int i=0;
+    int j=0;
+    for(;chr[i]!='\0';i++)
+    {
+        j++;
+    }
+    return j;
+}
+
+void str_read(char chr[])
+{
+    int i=0;
+    while(1)
+    {
+        scanf("%c",&chr[i]);
+        if(chr[i]=='\n')
+        {
+            break;
+        }
+        i++;
+    }
+    chr[i]='\0';
+}
