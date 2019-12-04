@@ -1,0 +1,56 @@
+/*Sorting use selection sort*/
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+    srand(time(NULL));
+    int n[25],check[25]={0};
+    int j,k;
+    int i=0;
+    int temp,mini;
+    /*Give random number*/
+    printf("random number:\n");
+    while(i<25)
+    {
+        n[i]=rand()%51+150;
+        if(check[n[i]-150]==0)
+        {
+            check[n[i]-150]=1;
+            printf("%2d\t",n[i]);
+            i++;
+        }
+    }
+    printf("\n");
+    printf("sorting:\n");
+    for(i=0;i<24;i++) //use selection sort
+    {
+        mini=i; //find mini
+        for(j=i+1;j<25;j++) //for loop to find while i, the least number
+        {
+            if(n[j]<n[mini])
+            {
+                mini=j;
+            }
+        }
+        temp=n[i]; //swap it
+        n[i]=n[mini];
+        n[mini]=temp;
+    }
+    for(i=0;i<25;i++)
+    {
+        printf("%2d\t",n[i]);
+    }
+    printf("\n");
+    printf("graduation photo\n");//print 5 change a line
+    for(i=4;i>=0;i--)
+    {
+        printf("%d\t%d\t%d\t%d\t%d\t\n",n[5*i+4],n[5*i+3],n[5*i+2],n[5*i+1],n[5*i]);
+    }
+    system("pause");
+}
+
+
+
+
+
