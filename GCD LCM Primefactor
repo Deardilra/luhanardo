@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<stdlib.h>
+int is_prime(int);
+void prime_factorization(int);
+int GCD(int,int);
+int LCM(int,int);
+
+int main()
+{
+    FILE*input;
+    input=fopen("data.txt","r");
+    int num1,num2;
+    while(fscanf(input,"%d%d",&num1,&num2) != EOF)
+    {
+        printf("\n%d\t%d\n",num1,num2);
+        printf("prime factorization of %d is:",num1);
+        prime_factorization(num1);
+        printf("\nprime factorization of %d is:",num2);
+        prime_factorization(num2);
+        printf("\nGCD:%d",GCD(num1,num2));
+        printf("\nLCM:%d",LCM(num1,num2));
+
+    }
+}
+
+int is_prime(int num) //in function, the type  is need
+{
+    int i;
+    for(i=2;i<=num-1;i++)
+    {
+        if(num%i==0)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
+}
+
+void prime_factorization(int num)
+{
+    int i;
+    int count=1;
+    for(i=2;i<=num;i++)
+    {
+        if(is_prime(i))
+        {
+            while(num%i==0)//use while loop since it can be divided many timese by the same divider
+            {
+                if(count != 1)
+                {
+                    printf("x%d",i);
+                }
+                else
+                {
+                    printf("%dx",i);
+                    count++;
+                }
+                num=num/i;
+            }
+        }
+    }
+}
+
+int GCD(int num1,int num2)
+{
+    while(num1 > 0 && num2 > 0)
+    {
+        if(num1 > num2)
+        {
+            num1=num1%num2;
+        }
+        else
+        {
+            num2=num2%num1;
+        }
+        if(num1==0)
+        {
+            return num2;
+        }
+        else
+        {
+            return num1;
+        }
+    }
+}
+
+int LCM(int num1,int num2)
+{
+    return num1*num2/GCD(num1,num2);
+}
