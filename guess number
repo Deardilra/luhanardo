@@ -1,0 +1,37 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+    srand(time(NULL));
+    int number;
+    int round;
+    int guess;
+    int a=1,c=1000;//a=low,b=high
+    number=rand()%1000+1;
+    for(round=1;;round++)
+    {
+        printf("round%d\n",round);
+        printf("Please enter a number from %d to %d:",a,c);
+        scanf("%d",&guess);
+        if(guess == number)
+        {
+            printf("Bingo");
+            break;
+        }
+        else if(guess < number)
+        {
+            a=guess;
+            printf("It's too low\n");
+            printf("Please enter a number from %d to %d\n",a,c);
+        }
+        else if(guess > number)
+        {
+            c=guess;
+            printf("It's too high\n");
+            printf("Please enter a number from %d to %d\n",a,c);
+        }
+    }
+    printf("\nuse %d rounds",round);
+    return 0;
+}
