@@ -24,15 +24,15 @@ int main()
     printf("\n");
 
     printf("sorting:\n");
-    for(j=0;j<24;j++) //n[0]~n[24]
+    for(j=0;j<24;j++) //n[0]~n[24] 
     {
-        for(k=0;k<24;k++) //n[0] compare with the other number
+        for(k=j+1;k<24;k++) //n[0] compare with the other number
         {
-            if(n[k] > n[k+1])
+            if(n[j] > n[k])
             {
-                temp=n[k]; //do swap
-                n[k]=n[k+1];
-                n[k+1]=temp;
+                temp=n[j]; //do swap
+                n[j]=n[k];
+                n[k]=temp;
             }
         }
     }
