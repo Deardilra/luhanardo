@@ -1,0 +1,94 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<time.h>
+int main()
+{
+    srand(time(NULL));
+    int choose,choose_2;
+    int x;
+    int balanced_money=0,money=0;
+
+    printf("Is it the first time:");
+    scanf("%d",&choose);
+    if(choose == 1)
+    {
+        balanced_money=rand()%40001+10000;
+        printf("\nBalanced money:%d\n",balanced_money);
+    }
+    else
+    {
+        printf("\nBalanced money:%d\n",balanced_money);
+    }
+    char str_1[5];
+    FILE*inp=fopen("money.txt","a");
+    fprintf(inp,"\nFunction\tNote\tMoney\tBalanced\n");
+    fclose(inp);
+    printf("Whether continue to operate:");
+    scanf("%s",&str_1);
+    char str_2[5];
+    if(strlen(str_1) != 2)
+    do
+    {
+        printf("What function do you want to use?\n");
+        printf("1.remaining\n");
+        printf("2.Withdraw\n");
+        printf("3.Transfer\n");
+        printf("4.Deposit\n");
+        printf("You choose:");
+        scanf("%d",&choose_2);
+        switch(choose_2)
+        {
+        case 1:
+            {
+                printf("\nBalanced money:%d\n",balanced_money);
+                scanf("%s",str_2);
+                break;
+            }
+        case 2:
+            {
+                char note_2[15];
+                FILE*oup_2=fopen("money.txt","a");
+                printf("Enter money:");
+                scanf("%d",&money);
+                printf("Note:");
+                scanf("%s",&note_2);
+                balanced_money=balanced_money-money;
+                fprintf(oup_2,"Withdraw\t%s\t%d\t%d\n",note_2,money,balanced_money);
+                fclose(oup_2);
+                printf("\n");
+                scanf("%s",str_2);
+                break;
+            }
+        case 3:
+            {
+                char note_3[15];
+                FILE*oup_3=fopen("money.txt","a");
+                printf("Enter money:");
+                scanf("%d",&money);
+                printf("Note:");
+                scanf("%s",&note_3);
+                balanced_money=balanced_money-money;
+                fprintf(oup_3,"Transfer\t%s\t%d\t%d",note_3,money,balanced_money);
+                fclose(oup_3);
+                printf("\n");
+                scanf("%s",str_2);
+                break;
+            }
+        default:
+            {
+                char note_4[15];
+                FILE*oup_4=fopen("money.txt","a");
+                printf("Enter money:");
+                scanf("%d",&money);
+                balanced_money=balanced_money+money;
+                fprintf(oup_4,"Deposit\t\t\t%d\t%d",money,balanced_money);
+                fclose(oup_4);
+                printf("\n");
+                scanf("%s",str_2);
+            }
+        }
+    }
+    while(strlen(str_2)!= 2);
+    return 0;
+}
