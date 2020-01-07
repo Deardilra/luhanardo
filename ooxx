@@ -1,0 +1,57 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+int main()
+{
+    srand(time(NULL));
+    int array[3][3]={0};
+    int check[3][3]={0};
+    int i,j;
+    int pi,pj;
+    int ci,cj;
+    while(1)
+    {
+         for(i=0;i<3;i++)
+        {
+            for(j=0;j<3;j++)
+            {
+                if(j>0)
+                {
+                    printf(" ");
+                }
+                printf("%d",array[i][j]);
+            }
+            printf("\n");
+        }
+       while(1)
+       {
+            printf("Player input:");
+            scanf("%d%d",&pi,&pj);
+            if(check[pi][pj] != 1)
+            {
+                if(check[pi][pj] == 0)
+                {
+                    check[pi][pj] = 1;
+                    array[pi][pj] = 1;
+                    break;
+                }
+            }
+       }
+       while(1)
+       {
+            ci=rand()%3;
+            cj=rand()%3;
+            if(check[ci][cj] != 0)
+            {
+                ci=rand()%3;
+                cj=rand()%3;
+            }
+            else
+            {
+                array[ci][cj] = 2;
+                check[ci][cj] = 1;
+                break;
+            }
+       }
+    }
+}
