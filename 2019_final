@@ -1,0 +1,286 @@
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include<time.h>
+int Labar(); //函數可以以沒有帶值的形式傳入
+int Bomb(int, int, int);
+int Guess();
+int time_2=0;
+int A=0,B=0,C=0;
+int main()
+{
+    int r=1;
+    srand(time(NULL));
+    char account[50],password[50];
+    int choose=0;
+    while(choose != 4)
+    {
+        printf("What function do you want to choose:");
+        printf("\n1.Register\n2.Login\n3.Delete\n4.Quit\nYou choose:");
+        scanf("%d",&choose);
+        switch(choose)
+        {
+        case 1:
+            {
+                printf("Your account:");
+                scanf("%s",account);
+                printf("Your password:");
+                scanf("%s",password);
+
+                /*Repeat register or not*/
+                FILE*input=fopen("sql.txt","r");
+                int state=0;
+                char sql_account[50],sql_password[50];
+                while(fscanf(input,"%s%s",sql_account,sql_password) != EOF)
+                {
+                    if(strcmp(account,sql_account) == 0)
+                    {
+                        state = 1;
+                        break;
+                    }
+                }
+                fclose(input);
+                if(state == 1)
+                {
+                    printf("Repetition\n");
+                }
+                else
+                {
+                    printf("OK\n");
+                    FILE*output=fopen("sql.txt","w");
+                    fprintf(output,"%s\t\t%s\n",account,password);
+                    fclose(output);
+                }
+            }
+            break;
+        case 2:
+            {
+                printf("Enter account:");
+                scanf("%s",account);
+                printf("Enter password:");
+                scanf("%s",password);
+
+                /*Login or not*/
+                FILE*input2=fopen("sql.txt","r");
+                int state2=0;
+                char sql_account2[50],sql_password2[50];
+                char choose2[10];
+                while(fscanf(input2,"%s%s",sql_account2,sql_password2) != EOF)
+                {
+                    if(strcmp(account,sql_account2) == 0 && strcmp(password,sql_password2) == 0)
+                    {
+                        state2 = 1;
+                        break;
+                    }
+                }
+                fclose(input2);
+                if(state2 == 1)
+                {
+                    printf("Login!\n");
+                    system("pause");
+                    system("CLS");
+                A:
+                    printf("Which game do you want to play:");
+                    printf("\n1.LaBar1\n2.Bomb2\n3.GuessNum3\n4.Quit4\nYou enter:");
+                    scanf("%s",choose2);
+                    if(strcmp(choose2,"LaBar1") == 0)
+                    {
+                        A=Labar();
+                        r*=2;
+                        printf("%d\n",A);
+                        if(r% 2 != 0 || r % 3 != 0 || r % 5 != 0)
+                        {
+                            goto A;
+                        }
+                    }
+                    if(strcmp(choose2,"Bomb2") == 0)
+                    {
+                        int pi,pj;
+                        int check[9]={0};
+                        int array[3][3]={0};
+                        int i,j;
+                        for(i=0;i<3;i++)
+                        {
+                            for(j=0;j<3;)
+                            {
+                                array[i][j]=rand()%9;
+                                if(check[array[i][j]] == 0)
+                                {
+                                    check[array[i][j]] = 1;
+                                    printf("%d",array[i][j]);
+                                    j++;
+                                }
+                            }
+                            printf("\n");
+                        }
+                        printf("Player input:");
+                        scanf("%d%d",&pi,&pj);
+                        while(Bomb(array[pi][pj],pi,pj))
+                        {
+                            scanf("%d%d",&pi,&pj);
+                        }
+                        printf("%d\n",B);
+                        r*=3;
+                        if(r% 2 != 0 || r % 3 != 0 || r % 5 != 0) //一個不成立就不會跳出goto A
+                        {
+                            goto A;
+                        }
+                    }
+                    if(strcmp(choose2,"GuessNum3") == 0)
+                    {
+                        C=Guess();
+                        printf("%d\n",C);
+                        r*=5;
+                        if(r% 2 != 0 || r % 3 != 0 || r % 5 != 0)
+                        {
+                            goto A;
+                        }
+                    }
+                    if(strcmp(choose2,"Quit4") == 0)
+                    {
+                        return 0;
+                    }
+                     if(r % 2 == 0 && r % 3 == 0 && r % 5 == 0)
+                    {
+                        printf("The point is %d\n",A+B+C);
+                    }
+                }
+                else
+                {
+                    printf("Fail\n");
+                }
+            }
+            break;
+        case 3:
+            {
+                printf("Delete account:");
+                scanf("%s",account);
+                printf("Delete password:");
+                scanf("%s",password);
+                FILE*input3=fopen("sql.txt","r");
+                FILE*temp=fopen("sql.txt","w");
+                char sql_account3[50],sql_password3[50];
+                while(fscanf(input3,"%s%s",sql_account3,sql_password3) != EOF)
+                {
+                    if(strcmp(account,sql_account3) != 0 || strcmp(password,sql_password3) != 0)
+                    {
+                        fprintf(temp,"%s%s",sql_account3,sql_password3);
+                    }
+                }
+                fclose(input3);
+                fclose(temp);
+                remove("sql.txt");
+                FILE*input4=fopen("temp.txt","r");
+                FILE*output4=fopen("sql.txt","w");
+                while(fscanf(input4,"%s%s",sql_account3,sql_password3) != EOF)
+                {
+                    fprintf(output4,"%s%s",sql_account3,sql_password3);
+                }
+                fclose(input4);
+                fclose(output4);
+                remove("temp.txt");
+                printf("Clear\n");
+            }
+            break;
+        default:
+            {
+                printf("Bye!\n");
+            }
+        }
+    }
+}
+int Labar()
+{
+    int sum=0;
+    int a,b,c;
+    int i;
+    for(i=0;i<10;i++)
+    {
+        a=rand()%9;
+        b=rand()%9;
+        c=rand()%9;
+        if(a == b && a == c)
+        {
+            A+=5;
+        }
+        else if(a == b && a != c)
+        {
+            A+=1;
+        }
+        else if(a == c && a != b)
+        {
+            A+=1;
+        }
+        else if(b == c && b != a)
+        {
+            A+=1;
+        }
+        printf("(%d,%d,%d),point:%d\n",a,b,c,A);
+        sum=sum+A;
+    }
+    return sum;
+}
+int Bomb(int array, int pi, int pj)
+{
+    if(array != 0)
+    {
+        ++B;
+        return 1;
+    }
+    else
+    {
+        printf("Bomb!\n");
+        ++B;
+        return 0;
+    }
+}
+int Guess() //function 裡面可以不放值 但可以回傳值 型別依prototye而定
+{
+    /*幾A幾B的遊戲*/
+    int i;
+    int x;
+    int com[3],player[3];//用來把每一個位數給分開
+    int num=100;
+    int a=0,b=0;
+    int com_num;
+    com_num=rand()%900+100;
+    printf("%d\n",com_num);
+    while(a != 3 && time_2 < 10)
+    {
+        a=0,b=0;
+        num=100;
+        printf("Please input the x:");
+        scanf("%d",&x);
+        for(i=0;i<3;i++)
+        {
+            com[i]=(com_num/num)%10;//都要%10才可以得到小於10的整數
+            player[i]=(x/num)%10;
+            num=num/10;
+        }
+        for(i=0;i<3;i++)
+        {
+            if(com[i] == player[i])
+            {
+                a++;
+            }
+            else if(com[i] == player[0] || com[i] == player[1] || com[i] == player[2])
+            {
+                b++;
+            }
+        }
+        time_2++;
+        printf("%dA%dB\n",a,b);
+    }
+    if(a == 3)
+    {
+        if(time_2 < 7)
+        {
+            return 11-time_2;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+}
+
