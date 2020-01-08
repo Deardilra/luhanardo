@@ -1,57 +1,179 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
+#include<string.h>
+void ooxx();
 int main()
 {
-    srand(time(NULL));
-    int array[3][3]={0};
-    int check[3][3]={0};
+    ooxx();
+    system("pause");
+    system("CLS");
+    printf("Bye!\n");
+}
+void ooxx()
+{
     int i,j;
-    int pi,pj;
     int ci,cj;
+    int pi,pj;
+    int array[3][3]={0};
+    int check[3][3]={0};//Decide repeated choice or not
     while(1)
     {
-         for(i=0;i<3;i++)
+        for(i=0;i<3;i++)
         {
             for(j=0;j<3;j++)
             {
-                if(j>0)
-                {
-                    printf(" ");
-                }
                 printf("%d",array[i][j]);
             }
             printf("\n");
         }
-       while(1)
-       {
+        while(1)
+        {
             printf("Player input:");
             scanf("%d%d",&pi,&pj);
-            if(check[pi][pj] != 1)
+            if(check[pi][pj] == 0)
             {
-                if(check[pi][pj] == 0)
-                {
-                    check[pi][pj] = 1;
-                    array[pi][pj] = 1;
-                    break;
-                }
+                array[pi][pj] = 1;
+                check[pi][pj] = 1;
+                break;
             }
-       }
-       while(1)
-       {
+        }
+        while(1)
+        {
             ci=rand()%3;
             cj=rand()%3;
-            if(check[ci][cj] != 0)
-            {
-                ci=rand()%3;
-                cj=rand()%3;
-            }
-            else
+            if(check[ci][cj] == 0)
             {
                 array[ci][cj] = 2;
                 check[ci][cj] = 1;
                 break;
             }
-       }
+        }
+        /*Decide who win,(i,e get a line first.)*/
+        if(array[0][0] == 1 && array[0][1] == 1 && array[0][2] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[0][0] == 1 && array[1][0] == 1 && array[2][0] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[0][1] == 1 && array[1][1] == 1 && array[2][1] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[1][0] == 1 && array[1][1] == 1 && array[1][2] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[0][2] == 1 && array[1][2] == 1 && array[2][2] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[2][0] == 1 && array[2][1] == 1 && array[2][2] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[0][0] == 1 && array[1][1] == 1 && array[2][2] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[2][2] == 1 && array[1][1] == 1 && array[2][0] == 1){
+            printf("You win\n");
+            break;
+        }
+        if(array[0][0] == 2 && array[0][1] == 2 && array[0][2] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[0][0] == 2 && array[1][0] == 2 && array[2][0] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[0][1] == 2 && array[1][1] == 2 && array[2][1] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[1][0] == 2 && array[1][1] == 2 && array[1][2] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[0][2] == 2 && array[1][2] == 2 && array[2][2] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[2][0] == 2 && array[2][1] == 2 && array[2][2] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[0][0] == 2 && array[1][1] == 2 && array[2][2] == 2){
+            printf("You lose\n");
+            break;
+        }
+        if(array[2][2] == 2 && array[1][1] == 2 && array[2][0] == 2){
+            printf("You lose\n");
+            break;
+        }
+    }
+     for(i=0;i<3;i++)
+    {
+        for(j=0;j<3;j++)
+        {
+            printf("%d",array[i][j]);
+        }
+        printf("\n");
+    }
+    /*Decide the point*/
+    int sum[3][3]={0};
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<3;j++)
+        {
+            if(j > 0)
+            {
+                printf(" ");
+            }
+            if(array[i][j] == 1 || array[i][j] == 2)
+            {
+                printf("0"); //1 or 2 goto 0;
+            }
+            else
+            {
+                if(i > 0)
+                {
+                    sum[i][j]+=array[i-1][j];
+                }
+                if(j > 0)
+                {
+                    sum[i][j]+=array[i][j-1];
+                }
+                if(i < 2)
+                {
+                    sum[i][j]+=array[i+1][j];
+                }
+                if(j < 2)
+                {
+                    sum[i][j]+=array[i][j+1];
+                }
+                if(i > 0 && j > 0)
+                {
+                    sum[i][j]+=array[i-1][j-1];
+                }
+                if(i > 0 && j < 2)
+                {
+                    sum[i][j]+=array[i-1][j+1];
+                }
+                if(i < 2 && j > 0)
+                {
+                    sum[i][j]+=array[i+1][j-1];
+                }
+                if(i < 2 && j < 2)
+                {
+                    sum[i][j]+=array[i+1][j+1];
+                }
+                printf("%d",sum[i][j]);
+            }
+        }
+        printf("\n");
     }
 }
