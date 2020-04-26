@@ -1,0 +1,76 @@
+//top-down rule: We figure out this funtion in many parts.
+//The easiast way and efficient way is to think in small parts from top to down
+//variables are in need, and just remember that don't use the same variables in relative loops.
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#define YELLOW_BOLD  "\x1b[;33;1m"
+#define WHITE_BOLD   "\x1b[;37;1m"
+#define CLEAR() printf("\033[2J")
+#define MOVOTO(x,y) printf("\033[%d;%dH",x,y)
+
+int main()
+{
+	int x,i,j,t=0,k;//x=time,i=print the yellow bold,j=print the space,t=time
+	printf("Please enter the time t:");
+	scanf("%d",&x);
+	for(k=x;k>=0;k--)
+	{
+		CLEAR();	
+		printf("\ntime:%d\n",x-t);
+		for(i=0;i<2*x+3;i++) //the upper line
+		{
+			printf("*");
+		}
+		printf("\n");
+		for(i=0;i<=x;i++) 
+		{
+			for(j=0;j<=i;j++) //remember to use j as a variable, since use i will let the loop cicuit
+			{
+				printf(" ");
+			} 	    
+			printf("*");
+			for(j=0;j<2*x-2*i-1;j++) //the outer loop's variable is i, so we use j as an inner variable, do not use i
+			{
+				if(i>=t)
+					printf(YELLOW_BOLD"*");//use define before "*"
+				else 
+					printf(" ");
+			}
+			if(i!=x)
+				printf(WHITE_BOLD"*");//since i = x has already print * before
+			else 
+				printf("\n");
+			printf("\n");
+		} 
+		for(i=x-1;i>=0;i--) //the lower line, use x-1 as a yellow bold times to run
+ 		{
+			for(j=i;j>=0;j--)//how many space to print
+			{
+				printf(" ");
+			}
+			printf("*");
+			for(int z=2*x-2*i-1;z>0;z--)
+			{
+				if(i<t)
+				{
+					printf(YELLOW_BOLD"*");
+				}
+   				else
+				{
+					printf(" ");
+				}
+			}
+			printf(WHITE_BOLD"*");
+			printf("\n");
+		}
+		for(i=0;i<2*x+3;i++) //the bottom line
+		{
+			printf("*");
+		}
+		printf("\n");
+		sleep(1);
+		MOVOTO(0,0);
+		printf("\nHey I'm here\n");
+		t++;
