@@ -1,0 +1,25 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<math.h>
+float f(float a,float b,float c,float d,float x0)
+{
+	float fx,fx1,x1;
+	fx=a*x0*x0*x0+b*x0*x0+c*x0+d;
+	fx1=3*a*x0*x0+2*b*x0+c;
+	x1=x0-(fx/fx1);
+	while(fabs(x0-x1)>0.00001)
+	{
+		x0=x1;
+		fx=a*x0*x0*x0+b*x0*x0+c*x0+d;
+		fx1=3*a*x0*x0+2*b*x0+c;
+		x1=x0-(fx/fx1);
+	}
+	return x0;
+}
+int main()
+{
+	float a,b,c,d,x0;
+	printf("Please enter the coefficients:");
+	scanf("%f%f%f%f%f",&a,&b,&c,&d,&x0);
+	printf("The root is %f",f(a,b,c,d,x0));
+}
