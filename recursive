@@ -1,0 +1,26 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+float Vy(int t,int N)//function cannot return function
+{
+	int y;
+	if(t>0)
+		y=Vy(t-1,N)-9.81+0.1*0.2*N;
+		//in return value function with recursiven operatin, I need the value to return, so wait for the equation to return
+	else 
+		return 56+0.02*N;//in t=0, a=0
+	return y;
+}
+int main()
+{
+	int  t=0;
+	int  N;
+	float y0=0;
+	srand(time(NULL));
+	for(int i=0;i<11;i++)
+	{
+		N=rand()%3-1;
+		printf("At time:%d\tNoise:%d\tAltitude:%lf\tDistance:%d\tVelocity_y:%f\t\n",i,N,y0,42*i,Vy(i,N));
+		y0=y0+Vy(i,N);//height aiter late than vy
+	}
+}
