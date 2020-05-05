@@ -1,0 +1,68 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+typedef int bool;
+#define true 1
+#define false 0
+int main()
+{
+    bool out=true;
+    int arr1[4],arr2[4];
+    int i,j;
+    int x,y;
+    int player,computer;
+    int a=0,b=0;
+    int con=1000;
+    srand(time(NULL));
+    computer=rand()%9000+1000;
+    printf("%d\n",computer);
+    while(out)
+    {
+        con=1000;//歸0 constant
+        a=0,b=0; //歸0 a b
+        printf("Please enter your number:");
+        scanf("%d",&player);
+        for(i=0;i<4;i++)
+        {
+            arr1[i]=computer/con;
+            arr2[i]=player/con;
+            computer=computer%con;
+            player=player%con;
+            con=con/10;
+            printf("%d,%d\n",arr1[i],arr2[i]);
+        }
+        for(i=0;i<4;i++)
+        {
+            x=0;//歸0
+            if(arr1[i]==arr2[i])
+            {
+                x=1;//set a flag
+            }
+            for(j=0;j<4;j++)
+            {
+                y=0;//歸0
+                if(arr1[i]==arr2[j])
+                {
+                    if(j!=i)
+                        y=1;//set a flag
+                }
+                if(y==1)
+                {
+                    b++;
+                }
+            }
+            if(x==1)
+            {
+                    a++;
+            }
+        }
+        printf("%dA%dB\n",a,b);
+        computer=1000*arr1[0]+100*arr1[1]+10*arr1[2]+arr1[3];//remember to return the computer back
+        if(a==4)
+        {
+            printf("Bingo");
+            out=false;
+        }
+    }
+    return 0;
+}
