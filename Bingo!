@@ -19,7 +19,7 @@ int main()
             while(1)
             {
                 arr1[i][j]=rand()%25+1;
-                if(check1[arr1[i][j]-1]==0)
+                if(check1[arr1[i][j]-1]==0)//remember check[number-1], since the check[25]=0~24
                 {
                     check1[arr1[i][j]-1]=1;
                     break;
@@ -47,7 +47,7 @@ int main()
     }
     while(1)
     {
-        a=0,b=0;
+        a=0,b=0;//reset a&b
         for(i=0;i<5;i++)
         {
             for(j=0;j<5;j++)
@@ -87,7 +87,7 @@ int main()
                     }
             }
         }
-        out=true;
+        out=true;//remember to reset out=true
         for(i=0;i<5 && out;i++)
         {
             for(j=0;j<5 && out;j++)
