@@ -1,0 +1,116 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct queue{
+ 
+ int data;
+ struct queue *next;
+ 
+};
+
+typedef struct queue Queue;
+
+Queue *pop(Queue *);
+void push(Queue *,int);
+void getfront(Queue *);
+void print_queue(Queue *);
+
+int main()
+{
+ int choice;
+ int value;
+ Queue *temp;
+ Queue *ptr;
+ ptr = malloc(sizeof(Queue));
+ temp = malloc(sizeof(Queue));
+ 
+ ptr->data = 0;
+ ptr->next = NULL;
+ 
+ while(1)
+ {
+  printf("---------------------------------------\n");
+  print_queue(ptr);
+ 
+  printf("\n1)Push 2)Pop 3)getFront 4)leave\n");
+  printf("Please enter your choice:");
+  scanf("%d", &choice);
+  
+  if(choice == 4)
+  {
+   printf("Bye~bye~\n");
+   break;
+  }
+  
+  switch(choice)
+  {
+   case 1:
+     printf("Please enter the value:");
+     scanf("%d", &value);
+    push(ptr,value);
+    break;
+   case 2:
+    if(ptr->next == NULL)
+     printf("this is the last value of queue\n");
+    else
+     ptr = pop(ptr->next);
+    break;
+   case 3:
+    getfront(ptr);
+    break;
+   default:
+    printf("wrong!!\n");
+   
+  }
+ }
+ 
+ free(ptr);
+ free(temp);
+ 
+ system("pause");
+ return 0;
+} 
+ 
+ 
+void push(Queue *ptr,int value)
+{
+  Queue *ptr2;
+  
+  ptr2 = malloc(sizeof(Queue));
+  ptr2->data = value;
+  ptr2->next = NULL;
+  
+  if (ptr->next == NULL)
+  {
+   ptr->next = ptr2;
+ }
+ else
+  push(ptr->next,value);
+}
+ 
+Queue *pop(Queue *ptr)
+{
+  Queue *front;
+  front = ptr;
+  return front;
+}
+ 
+void getfront(Queue *ptr)
+{
+  printf("%d\n",ptr->data);
+}
+ 
+void print_queue(Queue *ptr)
+{
+  printf("%d ",ptr->data);
+  
+  if(ptr->next != NULL)
+ { 
+  print_queue(ptr->next);
+ }
+ else
+ {
+  printf("\n");
+  printf("this is the end of the queue\n");
+ }
+}
