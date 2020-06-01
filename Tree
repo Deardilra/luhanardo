@@ -1,0 +1,142 @@
+#include<stdio.h>
+#include<stdlib.h>
+struct tree{
+	int node;
+	struct tree *left;
+	struct tree *right;
+};
+typedef struct tree Tree;
+void linklist(Tree *ptr, int num);
+void preorder(Tree *ptr);
+void inorder(Tree *ptr);
+void postorder(Tree *ptr);
+int find_num(Tree *ptr, int num);
+
+int main()
+{
+	Tree *ptr;
+	ptr=malloc(sizeof(Tree));
+	int a,num;
+	ptr->node=1;
+	ptr->left=NULL;
+	ptr->right=NULL;
+	while(1)
+	{
+		printf("Please input the num(-1 to end):");
+		scanf("%d",&num);
+		if(num == -1)
+			break;
+		if(ptr->node == 1)
+		{
+			ptr->node = num;
+		}
+		else
+		{
+			linklist(ptr,num);
+		}
+	}
+	printf("preorder:");preorder(ptr);
+	printf("\n");
+	printf("inorder:");inorder(ptr);
+	printf("\n");
+	printf("postorder:");postorder(ptr);
+	printf("\n");
+	while(1)
+	{
+		a=0;
+		printf("please input the value u want to find:");
+		scanf("%d",&num);
+		a=find_num(ptr,num);
+		if(a==0)
+			printf("Not found\n");
+		else 
+			printf("%d is in the list\n",num);
+	}
+}
+void linklist(Tree *ptr, int num)
+{
+	Tree *ptr2;
+	ptr2=malloc(sizeof(Tree));
+	ptr2->node = num;
+	ptr2->left=NULL;
+	ptr2->right=NULL;
+	
+	if(ptr2->node > ptr->node)
+	{
+		if(ptr->right == NULL)
+			ptr->right = ptr2;
+		else 
+		{
+			linklist(ptr->right,num);
+		}
+	}
+	if(ptr2->node < ptr->node)
+	{
+		if(ptr->left == NULL)
+			ptr->left = ptr2;
+		else 
+		{
+			linklist(ptr->left,num);
+		}
+	}
+}
+
+void preorder(Tree *ptr)
+{
+	printf("%d\t",ptr->node);
+	if(ptr->left != NULL) preorder(ptr->left);
+	if(ptr->right != NULL)preorder(ptr->right);
+}
+	
+void inorder(Tree *ptr)
+{
+	
+	if(ptr->left != NULL)
+		inorder(ptr->left);
+	printf("%d\t",ptr->node);
+	if(ptr->right != NULL)
+		inorder(ptr->right);
+}
+
+void postorder(Tree *ptr)
+{
+	if(ptr->left != NULL)
+		postorder(ptr->left);
+	if(ptr->right != NULL)
+		postorder(ptr->right);
+	printf("%d\t",ptr->node);
+}
+
+int find_num(Tree *ptr, int num)
+{
+	int a=0;
+	if(ptr->node == num)
+	{
+		a=1;
+	}
+	else
+	{
+		if(ptr->left != NULL)
+		{
+			a+=find_num(ptr->left,num);
+		}
+		if(ptr->right != NULL)
+		{
+			a+=find_num(ptr->right,num);
+		}
+	}
+	return a;
+}
+		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
