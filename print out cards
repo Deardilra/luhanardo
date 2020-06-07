@@ -1,0 +1,83 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<time.h>
+struct mid{ //mid is directly a type name of this struct
+    int num;
+}a[52]; //we use this to set an array of 52 num
+int main()
+{
+    int check[52]={0};
+    int i=0;
+    for(i=0;i<52;i++)
+    {
+        while(1)
+        {
+            a[i].num=rand()%52+1;
+            if(check[a[i].num - 1] != 1)
+            {
+               check[a[i].num - 1] = 1;
+               //printf("%d\t",a[i].num);
+               break;
+            }
+        }
+        printf("%d. ",i+1);
+        switch(a[i].num % 4)
+        {
+        case 0:
+                printf("Hearst");
+                break;
+        case 1:
+                printf("Diamonds");
+                break;
+        case 2:
+                printf("Clubs");
+                break;
+        default:
+                printf("Spades");
+                break;
+        }
+        printf(" of ");
+        switch(a[i].num % 13)
+        {
+        case 0:
+               printf("Ace");
+                break;
+        case 1:
+                printf("Deuce");
+                break;
+        case 2:
+                printf("Three");
+                break;
+        case 3:
+                printf("Four");
+                break;
+        case 4:
+                printf("Five");
+                break;
+        case 5:
+                printf("Six");
+                break;
+        case 6:
+                printf("Seven");
+                break;
+        case 7:
+                printf("Eight");
+                break;
+        case 8:
+                printf("Nine");
+                break;
+        case 9:
+                printf("Ten");
+                break;
+        case 10:
+                printf("Jack");
+                break;
+        case 11:
+                printf("Queen");
+                break;
+        default:
+                printf("King");
+        }
+        printf("\t\t");
+    }
+}
