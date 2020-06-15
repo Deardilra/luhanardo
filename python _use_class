@@ -1,0 +1,43 @@
+from bank import Bank as b
+x = input("Plase input your name:")
+y = input("Please input your number:")
+z = int(input("Please input your balance:"))
+w = b(x,y,z)
+while True:
+a = int(input("What func u want to choose:"))
+if a == 1:
+print(w.name())
+if a == 2:
+print(w.number())
+if a == 3:
+print(w.balance())
+if a == 4:
+money=int(input("Please input ur money:"))
+print("The money is {}".format(w.deposit(money)))
+if a == 5:
+money=int(input("Please input ur money:"))
+print("The money is {}".format(w.withdraw(money)))
+if a == 6:
+print(w.__str__())
+if a == -1:
+break
+---
+class Bank:
+def __init__(self,name,number,balance):#if I need money, I need to define money first, and thus it will run
+self.__name = name
+self.__number = number
+self.__balance = balance
+def name(self):
+return self.__name
+def number(self):
+return self.__number
+def balance(self):
+return self.__balance
+def deposit(self,money):
+self.__balance += money
+return self.__balance
+def withdraw(self,money):
+self.__balance -= money
+return self.__balance
+def __str__(self):
+return "The name is {}, the number is {}, the balance is {}.\n".format(self.__name,self.__number,self.__balance)
