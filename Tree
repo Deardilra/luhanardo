@@ -1,116 +1,68 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 struct tree{
-	int node;
+	int data;
 	struct tree *left;
 	struct tree *right;
 };
 typedef struct tree Tree;
-void linklist(Tree *ptr, int num);
-void preorder(Tree *ptr);
-void inorder(Tree *ptr);
-void postorder(Tree *ptr);
-int find_num(Tree *ptr, int num);
-
-int main()
+//function in use 
+void linklist(Tree *ptr, int val)
 {
-	Tree *ptr;
-	ptr=malloc(sizeof(Tree));
-	int a,num;
-	ptr->node=1;
-	ptr->left=NULL;
-	ptr->right=NULL;
-	while(1)
+	Tree *ptr2;
+	ptr2 = malloc(sizeof(Tree));
+	ptr2->data = val;
+	if(ptr->data < ptr2->data)
 	{
-		printf("Please input the num(-1 to end):");
-		scanf("%d",&num);
-		if(num == -1)
-			break;
-		if(ptr->node == 1)
+		if(ptr->right == NULL)
 		{
-			ptr->node = num;
+			ptr->right = ptr2;
 		}
 		else
 		{
-			linklist(ptr,num);
+			linklist(ptr->right,val);
 		}
 	}
-	printf("preorder:");preorder(ptr);
-	printf("\n");
-	printf("inorder:");inorder(ptr);
-	printf("\n");
-	printf("postorder:");postorder(ptr);
-	printf("\n");
-	while(1)
-	{
-		a=0;
-		printf("please input the value u want to find:");
-		scanf("%d",&num);
-		a=find_num(ptr,num);
-		if(a==0)
-			printf("Not found\n");
-		else 
-			printf("%d is in the list\n",num);
-	}
-}
-void linklist(Tree *ptr, int num)
-{
-	Tree *ptr2;
-	ptr2=malloc(sizeof(Tree));
-	ptr2->node = num;
-	ptr2->left=NULL;
-	ptr2->right=NULL;
-	
-	if(ptr2->node > ptr->node)
-	{
-		if(ptr->right == NULL)
-			ptr->right = ptr2;
-		else 
-		{
-			linklist(ptr->right,num);
-		}
-	}
-	if(ptr2->node < ptr->node)
+	if(ptr->data > ptr2->data)
 	{
 		if(ptr->left == NULL)
-			ptr->left = ptr2;
-		else 
 		{
-			linklist(ptr->left,num);
+			ptr->left = ptr2;
+		}
+		else
+		{
+			linklist(ptr->left,val);
 		}
 	}
 }
-
 void preorder(Tree *ptr)
 {
-	printf("%d\t",ptr->node);
-	if(ptr->left != NULL) preorder(ptr->left);
-	if(ptr->right != NULL)preorder(ptr->right);
+	printf("%d\t",ptr->data);
+	if(ptr->left != NULL)
+		preorder(ptr->left);
+	if(ptr->right != NULL)
+		preorder(ptr->right);
 }
-	
 void inorder(Tree *ptr)
 {
-	
 	if(ptr->left != NULL)
 		inorder(ptr->left);
-	printf("%d\t",ptr->node);
+	printf("%d\t",ptr->data);
 	if(ptr->right != NULL)
 		inorder(ptr->right);
 }
-
 void postorder(Tree *ptr)
 {
 	if(ptr->left != NULL)
 		postorder(ptr->left);
 	if(ptr->right != NULL)
 		postorder(ptr->right);
-	printf("%d\t",ptr->node);
+	printf("%d\t",ptr->data);
 }
-
-int find_num(Tree *ptr, int num)
+int find_val(Tree *ptr, int val)
 {
 	int a=0;
-	if(ptr->node == num)
+	if(ptr->data == val)
 	{
 		a=1;
 	}
@@ -118,25 +70,72 @@ int find_num(Tree *ptr, int num)
 	{
 		if(ptr->left != NULL)
 		{
-			a+=find_num(ptr->left,num);
+			a=a+find_val(ptr->left,val);
 		}
 		if(ptr->right != NULL)
 		{
-			a+=find_num(ptr->right,num);
+			a=a+find_val(ptr->right,val);
 		}
 	}
 	return a;
 }
-		
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+int main()
+{
+	Tree *ptr;
+	ptr->data = 0;
+	ptr=malloc(sizeof(Tree));
+	int val;
+	int a=0;
+	while(1)
+	{
+		printf("Please input a num:");
+		scanf("%d",&val);
+		if(val == -1)
+		{
+			break;
+		}
+		else
+		{
+			if(ptr->data == 0)
+				ptr->data = val;
+			else
+			{
+				linklist(ptr,val);
+			}
+		}
+	}
+	printf("\nPreorder:");
+	preorder(ptr);
+	printf("\nInorder");
+	inorder(ptr);
+	printf("\nPostorder");
+	postorder(ptr);
+	while(1)
+	{
+		a=0;
+		printf("Please enter the num to find:");
+		scanf("%d",&val);
+		if(val == -1)
+		{
+			break;
+		}
+		a=find_val(ptr,val);//rememeber
+		if(a == 0)
+		{
+			printf("not found");
+		}
+		if(a == 1)
+		{
+			printf("found");
+		}
+	}
+}
+
+
+
+
+
+
+
+
