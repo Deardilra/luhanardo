@@ -1,0 +1,57 @@
+import random
+
+class Pokemon():
+def __init__(self):
+self.name="nam"
+self.hp=200
+def pri(self):
+print("NAME:",self.name)
+print("HP:",self.hp)
+def check(self,x,y):
+if x<=0:
+print("Water win!")
+return 1
+if y<=0:
+print("Fire win!")
+return 1
+def Attack(self):
+z=random.choice([20,40,80,120])
+print("ATT VAL:",z)
+return z
+class Fire(Pokemon):
+def __init__(self,name,hp):
+self.name="FirePokemon:"+name
+self.hp=hp
+#super().__init__('FirePokemon-'+nam,hp)
+def Attack2(self):
+a=super().Attack()
+self.hp = self.hp - a
+return self.hp
+class Water(Pokemon):
+def __init__(self,name,hp):
+self.name="WaterPokemon:"+name
+self.hp=hp
+#super().__init__('WaterPokemon-'+name,hp)
+def Attack3(self):
+b=super().Attack()
+self.hp = self.hp - b
+return self.hp
+a=Fire(input("Name:"),int(input("HP:")))
+b=Water(input("Name:"),int(input("HP:")))
+p=Pokemon()
+while True:
+d = 0
+print("\nFire Attack")
+y=b.Attack3()
+a.pri()
+b.pri()
+d = p.check(a.hp,b.hp)
+if d == 1:
+break
+print("\nWater Attack")
+x=a.Attack2()
+a.pri()
+b.pri()
+d = p.check(a.hp,b.hp)
+if d == 1:
+break 
