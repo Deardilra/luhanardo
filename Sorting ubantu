@@ -1,0 +1,33 @@
+#include<stdio.h>
+#include<stdlib.h>
+int main()
+{
+	FILE*input=fopen("demo.txt","r");
+	int arr[10]={0};
+	int temp;
+	int i=0,j=0,count=0;
+	while(fscanf(input,"%d",&arr[i]) != EOF)
+	{
+		i++;
+		count++;
+	}
+	fclose(input);
+	FILE*output=fopen("demo.txt","w");
+	for(i=0;i<count;i++)
+	{
+		for(j=i+1;j<count;j++)
+		{
+			if(arr[j] < arr[i])
+			{
+				temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+	}
+	for(i=0;i<count;i++)
+	{
+		fprintf(output,"%d\n",arr[i]);
+	}
+	fclose(output);
+}	
