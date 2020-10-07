@@ -1,0 +1,67 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node{
+    int data;
+    struct node *ptr;
+} node;
+
+node* insert(node* head, int num) {
+    node *temp, *prev, *next;
+    temp = (node*)malloc(sizeof(node));
+    temp->data = num;
+    temp->ptr = NULL;
+    if(!head){
+        head=temp;
+    } else{
+        prev = NULL;
+        next = head;
+        while(next && next->data<=num){
+            prev = next;
+            next = next->ptr;
+        }
+        if(!next){
+            prev->ptr = temp;
+        } else{
+            if(prev) {
+                temp->ptr = prev->ptr;
+                prev-> ptr = temp;
+            } else {
+                temp->ptr = head;
+                head = temp;
+            }            
+        }   
+    }
+    return head;
+}
+
+void free_list(node *head) {
+    node *prev = head;
+    node *cur = head;
+    while(cur) {
+        prev = cur;
+        cur = prev->ptr;
+        free(prev);
+    }       
+}
+
+int main(){
+    int num;
+    node *head, *p;
+    head = NULL;
+    do {
+        printf("Enter a number");
+        scanf("%d",&num);
+        if(num) {
+            head = insert(head, num);
+        }
+    } while(num);
+    p = head;
+    printf("\nThe numbers are:\n");
+    while(p) {
+        printf("%d ", p->data);
+        p = p->ptr;
+    }
+    free_list(head);
+    return 0;
+}
