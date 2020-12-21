@@ -1,0 +1,349 @@
+/****
+408415005 Chih Kuang Wu
+408415059 Boyu Chen
+408415075 Chin Chun Lee
+****/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+//struct item with ID type and arrival time in int
+typedef struct Item{
+	int ID;
+	int type;
+	int arrival_time;
+}item;
+//list with two variables - data in struct item and a List pointer to contruct Linked list
+typedef struct List{
+	item *data;
+	struct List *next;
+}list;
+//a struct queue to store the first and last data in linked list
+typedef struct Queue{
+	list *front;
+	int count;
+	list *rear;
+}queue;
+
+queue *new_Q();
+int empty_Q(queue*);//return 1 if empty
+int full_Q(queue*,int);//return 1 if full queue
+int end_work(list*,list*,list*,list*,list*,list*,int);//if process platforms and queues is empty, then return 1
+void prin_QID(list*);//to print QID
+void enqueue(queue*,list*);//to enqueue list into a linked list
+void prin_Listdetail(list*);//print list data
+void ordered_list(list**,item*);//to order list in an ascending order
+void read_and_order_data(FILE*,char[],list**);//to read array data and call the ordered_list function 
+void process(list**,queue**,int*,int,int*,int);//to process the data in the processing platform
+void make_randfile(int num_of_data,char[],FILE*);//make random of numbers in a file
+void show_the_waiting_time(int,int,int,int,int,int,queue*);//show all the waiting time
+void show_each_time_situation(queue*,queue*,queue*,list*,list*,list*,int);//show every situations for each time
+void list_to_queue(list**,queue**,queue**,queue**,int*,int*,int*,int,int,int,int,int*,int*,int*);//allocate every data to each particular queues
+
+int main()
+{	
+	FILE* fptr;
+	int num_of_data,i;
+	int length1,length2,length3;
+	char filename[20];
+	//read data 
+	printf("Please enter the number of data to generate:");
+	scanf("%d",&num_of_data);
+	printf("Please enter the name of file to store:");
+	scanf("%s",filename);
+	printf("Please enter the length of Queue1:");
+	scanf("%d",&length1);
+	printf("Please enter the length of Queue2:");
+	scanf("%d",&length2);
+	printf("Please enter the length of Queue3:");
+	scanf("%d",&length3);
+	
+	list *L = malloc(sizeof(list));
+	make_randfile(num_of_data,filename,fptr);
+	read_and_order_data(fptr,filename,&L);
+	prin_Listdetail(L);
+
+	queue *Q1 = new_Q();
+	queue *Q2 = new_Q();
+	queue *Q3 = new_Q();
+	list *P1 = NULL;
+	list *P2 = NULL;
+	list *P3 = NULL;
+
+	int counter=0;
+	int count1,count2,count3;
+	int Q1sum=0,Q2sum=0,Q3sum=0;
+	int wait1=0,wait2=0,wait3=0;
+	int enQ1time,enQ2time,enQ3time;
+	//the terminal order - end_work() == 1
+	while(!end_work(P1,P2,P3,Q1->front,Q2->front,Q3->front,counter)){
+		//allocate every list to queue
+		list_to_queue(&L,&Q1,&Q2,&Q3,&Q1sum,&Q2sum,&Q3sum,counter,length1,length2,length3,&enQ1time,&enQ2time,&enQ3time);
+		//simultaneously process 3 types of data and calculate time
+		process(&P1,&Q1,&count1,counter,&wait1,enQ1time);	
+		process(&P2,&Q2,&count2,counter,&wait2,enQ2time);	
+		process(&P3,&Q3,&count3,counter,&wait3,enQ3time);
+		//show all results in order of time
+		show_each_time_situation(Q1,Q2,Q3,P1,P2,P3,counter);	
+		counter++;//represent time
+	}
+	show_the_waiting_time(wait1,wait2,wait3,Q1sum,Q2sum,Q3sum,Q1);	
+}
+
+void make_randfile(int num_of_data,char filename[],FILE *fptr)
+{
+	int i;
+
+	srand(time(NULL)); 
+	fptr = fopen(filename,"w");
+	for (i=0; i < num_of_data; ++i) 
+		fprintf(fptr, "%d %d %d\n", rand()%1000, rand()%3+1, rand()%20);//rand()%1000 == rand time, rand()%3+1 == types, rand()%20 == arrival time
+	fclose(fptr);
+}
+
+void read_and_order_data(FILE *fptr,char filename[],list **L)
+{
+	fptr = fopen(filename,"r");
+	(*L)->data=NULL;
+	(*L)->next=NULL;
+
+	item *N = malloc(sizeof(item));
+	int ntype,narrivaltime,nid;
+	//setdata into item *N
+	fscanf(fptr,"%d %d %d",&nid,&ntype,&narrivaltime);
+	N->ID=nid;
+	N->type=ntype;
+	N->arrival_time=narrivaltime;
+	(*L)->data=N;
+  	//terminal order - End of file or not
+	while(fscanf(fptr,"%d %d %d",&nid,&ntype,&narrivaltime)!=EOF)
+	{
+		item *N = malloc(sizeof(item));
+		N->ID=nid;
+		N->type=ntype;
+		N->arrival_time=narrivaltime;
+		ordered_list(&(*L),N);//call the ordered_list function
+	}
+	fclose(fptr);
+}
+
+int end_work(list* P1,list* P2,list* P3,list* front1,list* front2,list* front3,int counter)
+{
+	//if all the processing platforms is vaccum as well as all the list is empty and time is more than 19, then return 1
+	if(P1==NULL && P2==NULL && P3==NULL && front1==NULL && front2==NULL && front3==NULL && counter > 19)	return 1;
+	else	return 0;
+	
+}
+
+void list_to_queue(list **M,queue **Q1,queue **Q2,queue **Q3,int *Q1sum,int *Q2sum,int *Q3sum,int counter,int length1,int length2,int length3,int *enQ1time,int *enQ2time,int *enQ3time)
+{
+	//terminal order - List L == NULL || counter > 19 || Q1 or Q2 or Q3 == empty
+	while((*M)!=NULL && (*M)->data->arrival_time <= counter && !full_Q(*Q1,length1) && !full_Q(*Q2,length2) && !full_Q(*Q3,length3) ){
+		list *P = (*M)->next;//let pointer p store the address of M->next
+		list *T = (*M);//T store the address of M
+		if((*M)->data->type==1 && !full_Q(*Q1,length1)){
+			enqueue(*Q1,*M);//enqueue M to Q1
+			(*Q1sum)++;
+			(*M) = P;//M goes to M->next
+			*enQ1time = counter;//enqueue time == the current time(counter)
+		}
+		else if((*M)->data->type==2 && !full_Q(*Q2,length2)){
+			enqueue(*Q2,*M);//enqueue M to Q2
+			(*Q2sum)++;
+			(*M) = P;//M goes to M->next
+			*enQ2time = counter;//enqueue time == the current time(counter)
+		}
+		else if((*M)->data->type==3 && !full_Q(*Q3,length3)){
+			enqueue(*Q3,*M);//enqueue M to Q3
+			(*Q3sum)++;
+			(*M) = P;//M goes to M->next
+			*enQ3time = counter;//enqueue time == the current time(counter)
+		}
+		else{
+			while(P->data->arrival_time <= counter){
+				if(P->data->type==1 && !full_Q(*Q1,length1)){
+					T->next=P->next;
+					enqueue(*Q1,P);
+					(*Q1sum)++;
+					*enQ1time = counter;
+				}
+				else if(P->data->type==2 && !full_Q(*Q2,length2)){
+					T->next=P->next;
+					enqueue(*Q2,P);
+					(*Q2sum)++;
+					*enQ2time = counter;
+				}
+				else if(P->data->type==3 && !full_Q(*Q3,length3)){
+					T->next=P->next;
+					enqueue(*Q3,P);
+					(*Q3sum)++;
+					*enQ3time = counter;
+				}
+				P = T->next;
+			}
+		}
+	}
+}
+
+void process(list **P,queue **Q,int *count,int counter,int *wait,int enQtime)
+{
+	//if processing platform is empty && *Q isn't empty
+	if((*P) == NULL && !empty_Q(*Q)){
+		(*P) = (*Q)->front;//let pointer *P store the first address of *Q
+		(*Q)->front = (*Q)->front->next;//*Q->front goes to *Q->front->next
+		(*P)->next = NULL;//let *P->next = NULL to store only one data's address
+		(*count) = counter + (*P)->data->type;
+		(*wait) = (*wait) + counter - enQtime;//counter(current time), enqueue time(the time first enqueue)
+		(*Q)->count--;
+	}
+	else if((*count) <= counter && !empty_Q(*Q)){
+		//if processing platform is processing
+		(*P) = (*Q)->front;
+		(*Q)->front = (*Q)->front->next;
+		(*P)->next = NULL;
+		(*count) = counter + (*P)->data->type;
+		(*wait) = (*wait) + counter - enQtime;
+		(*Q)->count--;
+	}
+	else if((*count) == counter && empty_Q(*Q)){
+		(*P) = NULL;//if the count == counter(current), then let the platform points to NULL
+	}
+}
+
+void show_each_time_situation(queue* Q1,queue* Q2,queue* Q3,list* P1,list* P2,list* P3,int counter)
+{
+	//show the situation according to time
+	printf("\n\nTime %d:",counter); 
+	printf("\nQueue1:");
+	prin_QID(Q1->front);
+	printf("\nProcessing1:");	
+	if(P1 != NULL){
+		printf("%d",P1->data->ID);
+	}
+	printf("\nQueue2:");
+	prin_QID(Q2->front);
+	printf("\nProcessing2:");
+	if(P2 != NULL){
+		printf("%d",P2->data->ID);
+	}
+	printf("\nQueue3:");
+	prin_QID(Q3->front);
+	printf("\nProcessing3:");
+	if(P3 != NULL){
+		printf("%d",P3->data->ID);
+	}
+	printf("\n");
+}
+
+void show_the_waiting_time(int wait1,int wait2,int wait3,int Q1sum,int Q2sum,int Q3sum,queue *Q1)
+{
+	//show the processing time results according to time
+	printf("\nsum1:%d",Q1sum);
+	printf("\nsum2:%d",Q2sum);
+	printf("\nsum3:%d",Q3sum);
+	printf("\ntotalwatingtime1:%d",wait1);
+	printf("\ntotalwatingtime2:%d",wait2);
+	printf("\ntotalwatingtime3:%d",wait3);
+	printf("\naverage watingtime1:%f",(float)wait1 / (float)Q1sum);
+	printf("\naverage watingtime2:%f",(float)wait2 / (float)Q2sum);
+	printf("\naverage watingtime3:%f",(float)wait3 / (float)Q3sum);
+	printf("\n");
+}
+
+queue *new_Q()
+{
+       //allocate a new queue type Q to do linked list
+	queue* Q;
+	Q=malloc(sizeof(queue));
+	Q->front=malloc(sizeof(list));
+	Q->rear=malloc(sizeof(list));
+	Q->front = NULL;
+	Q->count = 0;
+	Q->rear = NULL;
+	return Q;
+}
+
+void ordered_list(list**L,item* new)
+{
+	list *N, *T, *P;
+	  
+	N = malloc(sizeof(list));
+	N->data = new;
+	N->next = NULL;
+	//if *L == NULL, let *L points to N
+	if(*L == NULL){
+		*L = N;
+	}
+	//if N < *L, points to the front
+	else if((*L)->data->arrival_time > N->data->arrival_time){
+		N->next = *L;
+		*L = N;
+	}
+	else{//N > *L
+		T = *L;//let a temp pointer points to the head *L
+		while (T->data->arrival_time <= N->data->arrival_time && T->next != NULL){
+			P = T;
+			T = T->next;
+		}
+		//the last node 
+		if (T->data->arrival_time > N->data->arrival_time){
+			P->next = N;
+			N->next = T;
+		}
+		else T->next = N;
+	}
+}
+
+void prin_Listdetail(list*a)
+{
+	//print_list data
+	if(a!=NULL){
+		printf("ID: %d\t Type: %d\tarrival time:%d\n",a->data->ID,a->data->type,a->data->arrival_time);
+		if(a->next!=NULL){
+			prin_Listdetail(a->next);
+		}
+	}
+}
+
+void prin_QID(list*a)
+{
+	//print Q's ID
+	if(a!=NULL){
+		printf("%d ",a->data->ID);
+		if(a->next!=NULL){
+			prin_QID(a->next);
+		}
+	}
+}
+
+void enqueue(queue *Q,list *N)
+{
+	N->next = NULL;
+	//if Q is empty. let Q->front & Q->rear all points to N(single node)
+	if(empty_Q(Q)){
+		Q->front = N;
+		Q->rear = N;
+	}
+	else{
+		//Q is not empty, let Q->rear->next points to new N, Q->rear points to N
+		Q->rear->next = N;
+		Q->rear = N;
+	}
+	Q->count++;
+}
+
+int empty_Q(queue *Q)
+{
+	//empty queue or not; if so, return 1, else 0
+	if(Q->front == NULL)	return 1;
+	else 			return 0;
+}
+
+int full_Q(queue *Q,int length)
+{
+	//full Q; if so, return 1, else 0
+	if(Q->count == length)	return 1;
+	else			return 0;
+}
+
