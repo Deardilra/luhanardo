@@ -1,0 +1,45 @@
+TITLE DEMO: Lab2 Buffer
+
+***** Inverter *****
+.SUBCKT INV VIN OUT VDD GND 
+MMPD OUT VIN GND GND NMOS_VTG W=215n L=55n M=1
+MMPU OUT VIN VDD VDD PMOS_VTG W=675n L=55n M=1
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+.TEMP T
+***************************
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Call Sub-circuits *****
+XINV1 VIN BUF VDD GND INV
+XINV2 BUF OUT VDD GND INV
+******************.***********
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VVIN VIN GND PULSE(0V VSUP 0n 0.1n 0.1n 4.9n 10n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+
+***** Analysis *****
+.TRAN 0.01n 50n SWEEP T 0 100 10        $ Transient analysis with temperature sweeping
+$.DC VVIN 0V VSUP 0.001V SWEEP T 0 80 10 $ DC analysis with temperature sweeping
+********************
+
+***** Measurement *****
+$.INC 'measurement.sp'
+
+.END $ End-of-File
