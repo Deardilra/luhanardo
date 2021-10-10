@@ -1,0 +1,35 @@
+.TITLE Tool Invocation Test Run (Inverter) VLSI course Lab01-1
+
+***** Inverter *****
+MMPD VD VG GND VB NMOS_VTG W=150n L=50n m=1
+********************
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Supply and Stimuli *****
+VVGS VG GND 0V
+VVDS VD GND 0V
+VVBS VB GND 0V
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION PROBE
+***************************
+
+***** Analysis *****
+.DC VVDS 0V 1V 0.05V VVGS 0.6V 1V 0.1V
+.PROBE I(*)V(*)
+********************
+
+.END $ End-of-File
