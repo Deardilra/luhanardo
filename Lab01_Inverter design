@@ -1,13 +1,13 @@
-.TITLE Lab2
+.TITLE Lab2 Inverter
 
 ***** Inverter *****
-MMPD OUT VIN GND GND NMOS_VTG W=200n L=80n m=1
-MMPU OUT VIN VDD VDD PMOS_VTG W=400n L=80n m=1
+MMPD OUT VIN GND GND NMOS_VTG W=100n L=60n m=1
+MMPU OUT VIN VDD VDD PMOS_VTG W=250n L=60n m=1
 ********************
 
 ***** Process and Temperature *****
 .PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
-.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
 .UNPROTECT
 .TEMP T
 ***************************
@@ -18,18 +18,26 @@ MMPU OUT VIN VDD VDD PMOS_VTG W=400n L=80n m=1
 
 ***** Supply and Stimuli *****
 VVDD VDD GND VSUP
-VVIN VIN GND PULSE(0V VSUP 0n 0.1n 0.1n 4.9n 10n)
+VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
 ******************************
 
 ***** Command Options *****
 .OP              $ Print operating point analysis data to *.lis file
 .OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
 .OPTION ACCURATE $ Higher simulation accuracy
+
 ***************************
 
 ***** Analysis *****
-.TRAN 0.001n 50n SWEEP T 0 100 10        $ Transient analysis with temperature sweeping
-$.DC VVIN 0V VSUP 0.001V SWEEP T 0 100 10 $ DC analysis with temperature sweeping
+.TRAN 0.001n 100n SWEEP T 0 100 10        $ Transient analysis with temperature sweeping
+.DC VVIN 0V VSUP 0.001V SWEEP T 0 80 10 $ DC analysis with temperature sweeping
+.INC 'measurement.sp'
 ********************
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
 
 .END $ End-of-File
