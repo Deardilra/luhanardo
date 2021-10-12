@@ -1,9 +1,9 @@
-TITLE DEMO: Lab2 Buffer
+TITLE DEMO: Sub-circuit (Buffer)
 
 ***** Inverter *****
 .SUBCKT INV VIN OUT VDD GND 
-MMPD OUT VIN GND GND NMOS_VTG W=215n L=55n M=1
-MMPU OUT VIN VDD VDD PMOS_VTG W=675n L=55n M=1
+MMPD OUT VIN GND GND NMOS_VTG W=100n L=50n M=1
+MMPU OUT VIN VDD VDD PMOS_VTG W=130n L=50n M=1
 .ENDS
 
 ***** Process and Temperature *****
@@ -24,7 +24,7 @@ XINV2 BUF OUT VDD GND INV
 
 ***** Supply and Stimuli *****
 VVDD VDD GND VSUP
-VVIN VIN GND PULSE(0V VSUP 0n 0.1n 0.1n 4.9n 10n)
+VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
 ******************************
 
 ***** Command Options *****
@@ -35,11 +35,17 @@ VVIN VIN GND PULSE(0V VSUP 0n 0.1n 0.1n 4.9n 10n)
 ***************************
 
 ***** Analysis *****
-.TRAN 0.01n 50n SWEEP T 0 100 10        $ Transient analysis with temperature sweeping
-$.DC VVIN 0V VSUP 0.001V SWEEP T 0 80 10 $ DC analysis with temperature sweeping
+.TRAN 0.001n 100n SWEEP T 0 80 10        $ Transient analysis with temperature sweeping
+.DC VVIN 0V VSUP 0.001V SWEEP T 0 80 10 $ DC analysis with temperature sweeping
 ********************
 
 ***** Measurement *****
-$.INC 'measurement.sp'
+.INC 'measurement.sp'
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
 
 .END $ End-of-File
