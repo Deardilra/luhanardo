@@ -1,0 +1,69 @@
+TITLE DEMO: Sub-circuit (NOR-2)
+
+***** NOR *****
+.SUBCKT NOR2 GND IA IB OUT VDD
+MMP2 BUF IB VDD VDD PMOS_VTG W=401n L=50n m=1
+MMP1 OUT IA BUF BUF PMOS_VTG W=401n L=50n m=1
+MMN1 OUT IA GND GND NMOS_VTG W=100n L=50n m=1
+MMN2 OUT IB GND GND NMOS_VTG W=100n L=50n m=1
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Call Sub-circuits *****
+XN2 GND IA IB OUT VDD NOR2
+******************.***********
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VIA IA GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 10n) 
+VIB IB GND PULSE(0V VSUP 3n 0.1n 0.1n 9n 20n)
+
+$VIA IA GND PWL 0n 0v,19.5n 0v,20n 1v,39.5n 1v,40n 0v,R=4 0
+$VIB IB GND PWL 0n 0v,10n 0v,10.5n 1v,19n 1v,19.5n 0v R=8 0
+$VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+.OPTION PROBE
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+$SWEEP x 300n 500n 1n     $ Transient analysis with temperature sweeping
+.PROBE TRAN V(*)
+$.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
+********************
+
+***** Measurement *****
+***** Rise time *****
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=1.5n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=1.5n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=1.5n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=1.5n Fall=1
+*****Delta time *****
+.MEAS TRAN DELTA PARAM = '1'
+.MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
+.MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
+
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+
+.END $ End-of-File
