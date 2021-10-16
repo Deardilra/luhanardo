@@ -1,13 +1,11 @@
-TITLE DEMO: Sub-circuit (OR-3)
+TITLE DEMO: Sub-circuit (OR-2)
 
 ***** OR-2 *****
-.SUBCKT OR3 GND IC IB IA OUT VDD
-MMP3 BUF1 IC VDD VDD PMOS_VTG W=876n L=50n m=1
-MMP2 BUF2 IB BUF1 BUF1 PMOS_VTG W=876n L=50n m=1
-MMP1 BOUT IA BUF2 BUF2 PMOS_VTG W=876n L=50n m=1
+.SUBCKT OR2 GND IA IB OUT VDD
+MMP2 BUF IB VDD VDD PMOS_VTG W=133n L=50n m=1
+MMP1 BOUT IA BUF BUF PMOS_VTG W=133n L=50n m=1
 MMN1 BOUT IA GND GND NMOS_VTG W=100n L=50n m=1
 MMN2 BOUT IB GND GND NMOS_VTG W=100n L=50n m=1
-MMN3 BOUT IC GND GND NMOS_VTG W=100n L=50n m=1
 MINVP OUT BOUT VDD VDD PMOS_VTG W=100n L=50n m=1
 MINVN OUT BOUT GND GND NMOS_VTG W=100n L=50n m=1
 .ENDS
@@ -23,14 +21,13 @@ MINVN OUT BOUT GND GND NMOS_VTG W=100n L=50n m=1
 *********************
 
 ***** Call Sub-circuits *****
-XO3 GND IC IB IA OUT VDD OR3
+XO2 GND IA IB OUT VDD OR2
 ******************.***********
 
 ***** Supply and Stimuli *****
 VVDD VDD GND VSUP
-VIA IA GND PULSE(0V VSUP 0n 2n 2n 8n 20n) 
-VIB IB GND PULSE(0V VSUP 3n 2n 2n 8n 20n)
-VIC IC GND PULSE(0V VSUP 6n 2n 2n 8n 20n)
+VIA IA GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 10n) 
+VIB IB GND PULSE(0V VSUP 2.4n 0.1n 0.1n 9n 20n)
 
 $VIA IA GND PWL 0n 0v,19.5n 0v,20n 1v,39.5n 1v,40n 0v,R=4 0
 $VIB IB GND PWL 0n 0v,10n 0v,10.5n 1v,19n 1v,19.5n 0v R=8 0
@@ -47,20 +44,24 @@ $VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
 
 ***** Analysis *****
 .TRAN 0.001n 100n 
-$SWEEP x 500n 1000n 1n      $ Transient analysis with temperature sweeping
+$SWEEP x 100n 300n 1n     $ Transient analysis with temperature sweeping
 .PROBE TRAN V(*)
 $.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
 ********************
 
 ***** Measurement *****
 ***** Rise time *****
-.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=1.5n RISE=1 $ Rise time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.9' TD=1.5n RISE=1
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=15n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=15n RISE=1
 ***** Fall time *****
-.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=1.5n Fall=1 $ Fall time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.1' TD=1.5n Fall=1
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=15n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=15n Fall=1
 *****Delta time *****
-.MEAS TRAN DELTA PARAM = '1'
+.MEAS TRAN Tplh TRIG V(IA) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IA) VAL='1*0.5' TD=20n Fall=2 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
+
 .MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
 .MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
 
