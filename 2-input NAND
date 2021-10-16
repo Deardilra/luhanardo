@@ -2,10 +2,10 @@ TITLE DEMO: Sub-circuit (NAND-2)
 
 ***** NAND *****
 .SUBCKT NAND2 GND IA IB OUT VDD
-MMP2 OUT IB VDD VDD PMOS_VTG W=254n L=50n m=1
-MMP1 OUT IA VDD VDD PMOS_VTG W=254n L=50n m=1
-MM1 OUT IA BUF BUF NMOS_VTG W=90n L=50n m=1
-MM0 BUF IB GND GND NMOS_VTG W=90n L=50n m=1
+MMP2 OUT IB VDD VDD PMOS_VTG W=284n L=50n m=1
+MMP1 OUT IA VDD VDD PMOS_VTG W=284n L=50n m=1
+MM1 OUT IA BUF BUF NMOS_VTG W=100n L=50n m=1
+MM0 BUF IB GND GND NMOS_VTG W=100n L=50n m=1
 .ENDS
 
 ***** Process and Temperature *****
@@ -41,8 +41,8 @@ $VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
 ***************************
 
 ***** Analysis *****
-.TRAN 0.001n 20n 
-$SWEEP x 90n 300n 1n     $ Transient analysis with temperature sweeping
+.TRAN 0.001n 100n 
+$SWEEP x 90n 400n 1n     $ Transient analysis with temperature sweeping
 .PROBE TRAN V(*)
 $.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
 ********************
@@ -50,13 +50,19 @@ $.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
 ***** Measurement *****
 
 ***** Rise time *****
-.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=1.5n RISE=1 $ Rise time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.9' TD=1.5n RISE=1
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=15n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=15n RISE=1
 ***** Fall time *****
-.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=1.5n Fall=1 $ Fall time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.1' TD=1.5n Fall=1
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=15n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=15n Fall=1
 *****Delta time *****
-.$MEAS TRAN DELTA PARAM = 'TR_OUT-TF_OUT'
+.MEAS TRAN Tplh TRIG V(IA) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IA) VAL='1*0.5' TD=20n Fall=2 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
+
+.MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
+.MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
 
 
 .ALTER
