@@ -2,9 +2,9 @@ TITLE DEMO: Sub-circuit (NOR-3)
 
 ***** NOR *****
 .SUBCKT NOR3 GND IC IB IA OUT VDD
-MMP3 BUF1 IC VDD VDD PMOS_VTG W=131n L=50n m=1
-MMP2 BUF2 IB BUF1 BUF1 PMOS_VTG W=131n L=50n m=1
-MMP1 OUT IA BUF2 BUF2 PMOS_VTG W=131n L=50n m=1
+MMP3 BUF1 IC VDD VDD PMOS_VTG W=130n L=50n m=1
+MMP2 BUF2 IB BUF1 BUF1 PMOS_VTG W=130n L=50n m=1
+MMP1 OUT IA BUF2 BUF2 PMOS_VTG W=130n L=50n m=1
 MMN1 OUT IA GND GND NMOS_VTG W=100n L=50n m=1
 MMN2 OUT IB GND GND NMOS_VTG W=100n L=50n m=1
 MMN3 OUT IC GND GND NMOS_VTG W=100n L=50n m=1
@@ -27,8 +27,8 @@ XN3 GND IC IB IA OUT VDD NOR3
 ***** Supply and Stimuli *****
 VVDD VDD GND VSUP
 VIA IA GND PULSE(0V VSUP 0n 0.1n 0.1n 20n 40n) 
-VIB IB GND PULSE(0V VSUP 0.1n 0.1n 0.1n 10n 20n)
-VIC IC GND PULSE(0V VSUP 0.4n 0.1n 0.1n 5n 10n)
+VIB IB GND PULSE(0V VSUP 5n 0.1n 0.1n 10n 20n)
+VIC IC GND PULSE(0V VSUP 8n 0.1n 0.1n 5n 10n)
 
 $VIA IA GND PWL 0n 0v,19.5n 0v,20n 1v,39.5n 1v,40n 0v,R=4 0
 $VIB IB GND PWL 0n 0v,10n 0v,10.5n 1v,19n 1v,19.5n 0v R=8 0
@@ -45,20 +45,24 @@ $VVIN VIN GND PULSE(0V VSUP 0n 2n 2n 8n 20n)
 
 ***** Analysis *****
 .TRAN 0.001n 100n 
-$SWEEP x 100n 300n 1n    $ Transient analysis with temperature sweeping
+$SWEEP x 90n 150n 1n    $ Transient analysis with temperature sweeping
 .PROBE TRAN V(*)
 $.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
 ********************
 
 ***** Measurement *****
 ***** Rise time *****
-.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=1.5n RISE=1 $ Rise time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.9' TD=1.5n RISE=1
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=15n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=15n RISE=1
 ***** Fall time *****
-.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=1.5n Fall=1 $ Fall time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.1' TD=1.5n Fall=1
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=15n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=15n Fall=1
 *****Delta time *****
-.MEAS TRAN DELTA PARAM = '1'
+.MEAS TRAN Tphl TRIG V(IB) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
+.MEAS TRAN Tplh TRIG V(IC) VAL='1*0.5' TD=20n Fall=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+
 .MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
 .MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
 
