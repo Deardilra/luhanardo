@@ -1,0 +1,83 @@
+ **** voltage sources
+
+ subckt                        
+ element  0:vvin     0:vvdd    
+  volts    500.0000m    1.0000 
+  current  -55.8439n -429.0416u
+  power     27.9220n  429.0416u
+
+     total voltage source power dissipation=  429.0695u       watts
+
+
+
+ **** resistors
+
+ subckt   xcs       
+ element  1:rrl     
+  r value  700.0000 
+  v drop   300.3291m
+  current  429.0416u
+  power    128.8537u
+
+
+
+ **** mosfets
+
+
+ subckt   xcs       
+ element  1:mmn1    
+ model    0:nmos_vtg
+ region     Saturati
+  id       429.0647u
+  ibs      3.417e-22
+  ibd     -709.6709f
+  vgs      500.0000m
+  vds      699.6709m
+  vbs        0.     
+  vth      411.3400m
+  vdsat    118.4967m
+  vod       88.6600m
+  beta      76.2314m
+  gam eff  400.0000m
+  gm         5.7737m
+  gds       15.3737u
+  gmb        1.3712m
+  cdtot     52.8502f
+  cgtot    644.8411f
+  cstot    433.4854f
+  cbtot    277.6739f
+  cgs      531.5899f
+  cgd       23.4724f
+
+
+
+
+
+
+
+ ****     small-signal transfer characteristics
+
+      v(op)/vvin                               =   -3.9982 
+      input resistance at             vvin     =    1.1100x
+      output resistance at v(op)               =  692.5371 
+
+
+
+ ******
+ title demo:cs amp
+
+ ****** ac analysis tnom=  25.000 temp=  25.000 ******
+ gain=  12.0373     at=   1.0000k
+             from=   1.0000k    to= 100.0000y
+ bandwidth_3db=   1.6424g
+ phase_margin= -20.8300 
+ ******
+ title demo:cs amp
+
+ ****** transient analysis tnom=  25.000 temp=  25.000 ******
+ max_op= 868.3313m    at= 750.0000n
+             from=  15.0000n    to=   1.0000u
+ min_op= 433.6778m    at= 250.0000n
+             from=  15.0000n    to=   1.0000u
+ vpp_op= 434.6535m
+ vdc_out= 651.0046m
