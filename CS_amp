@@ -1,0 +1,57 @@
+TITLE DEMO:CS AMP
+
+*****CS AMP*********
+.SUBCKT CS_AMP GND IP OP VDD
+MMN1 OP IP GND GND NMOS_VTG W=70u L=0.545u m=1
+RRL VDD OP 0.7K $[RP]
+CC1 OP GND 0.1p
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+
+***** Call Sub-circuits *****
+XCS GND IP OP VDD CS_AMP
+******************.***********
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+VVDD VDD GND VSUP
+VVIN IP GND DC=0.5V AC SIN(0.5V 0.0545V 1Meg)
+.AC DEC 100 1K 100000T
+*********************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OP PROBE
+***************************
+
+***** Analysis *****
+.TRAN 0.1n 1u 10n 
+$.PROBE V(*)
+.tf V(OP) VVIN
+.PROBE VDB(OP) VP(OP)
+********************
+.measure AC Gain MAX Vdb(OP)
+***** VMAX, VMIN, VPP, VDC *****
+.measure TRAN MAX_OP MAX V(OP) FROM=15n TO=1u 
+$ Maximal value of signal 'OP'
+
+.measure TRAN MIN_OP MIN V(OP) FROM=15n TO=1u 
+$ Minimal value of signal 'OP'
+
+.measure TRAN VPP_OP PARAM='MAX_OP-MIN_OP'    
+$ Peak-to-peak valuse of signal 'OUT'
+
+.measure TRAN VDC_OUT PARAM='VPP_OP/2+MIN_OP'  
+$ DC component of signal 'OP'
+
+******BandWidth_3DB, Phase_Margin********
+.measure AC BandWidth_3DB WHEN Vdb(OP) = 'Gain-3.0'
+.measure AC Phase_Margin FIND Vp(OP) WHEN Vdb(OP)=0
+.END
