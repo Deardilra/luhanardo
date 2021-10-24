@@ -2,8 +2,8 @@ TITLE DEMO:CS AMP
 
 *****CS AMP*********
 .SUBCKT CS_AMP GND IP OP VDD
-MMN1 OP IP GND GND NMOS_VTG W=70u L=0.545u m=1
-RRL VDD OP 0.7K $[RP]
+MMN1 OP IP GND GND NMOS_VTG W=60u L=0.12u m=1
+RRL VDD OP 0.5K $[RP]
 CC1 OP GND 0.1p
 .ENDS
 
@@ -41,9 +41,13 @@ $.PROBE V(*)
 ***** VMAX, VMIN, VPP, VDC *****
 .measure TRAN MAX_OP MAX V(OP) FROM=15n TO=1u 
 $ Maximal value of signal 'OP'
+.measure TRAN MAX_IP MAX V(IP) FROM=15n TO=1u 
+$ Maximal value of signal 'IP'
 
 .measure TRAN MIN_OP MIN V(OP) FROM=15n TO=1u 
 $ Minimal value of signal 'OP'
+.measure TRAN MIN_IP MIN V(IP) FROM=15n TO=1u 
+$ Minimal value of signal 'IP'
 
 .measure TRAN VPP_OP PARAM='MAX_OP-MIN_OP'    
 $ Peak-to-peak valuse of signal 'OUT'
