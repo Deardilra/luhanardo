@@ -1,75 +1,12 @@
-  ****** HSPICE -- L-2016.06-SP1 linux64 (Aug 24 2016) ******                    
-  Copyright (c) 1986 - 2021 by Synopsys, Inc. All Rights Reserved.              
-  This software and the associated documentation are proprietary
-  to Synopsys, Inc. This software may only be used in accordance
-  with the terms and conditions of a written license agreement with
-  Synopsys, Inc. All other use, reproduction, or distribution of
-  this software is strictly prohibited.
-  Input File: cs_amp                                                            
-  Command line options: /CAD_tool/SOC_ONECAD/Synopsys/HSPICE/2016.06-SP1/hspice/linux64/hspice -i cs_amp -o
- lic:  
- lic: FLEXlm: v11.2.1 
- lic: USER:   vlsi2127             HOSTNAME: vlsisoc16 
- lic: HOSTID: "3440b5a057e0"       PID:      25325 
- lic: Using FLEXlm license file: 
- lic: 26585@lscic 
- lic: Checkout 1 hspice 
- lic: License/Maintenance for hspice will expire on 14-may-2022/2020.12 
- lic: 204(in_use)/250(total) FLOATING license(s) on SERVER 26585@lscic 
- lic:   
-  **warning** (cs_amp:30) runlvl smaller than 5, reset to 5 when accurate turned on
-  **warning** (cs_amp:31) Multiple analysis statements are not allowed. The latter statement ignored.
- ac output variable type=vdb    not allowed for transient or dc
-
- ac output variable type=vp     not allowed for transient or dc
-
-  **warning** (cs_amp:4) Global net name, "gnd", in subckt pin list. The pin will be connected to the local net. Recommend to not use global net names in subckt pin lists.
-
- **warning**  runlvl smaller than 5, reset to 5 when accurate turned on
-1****** HSPICE -- L-2016.06-SP1 linux64 (Aug 24 2016) ******                    
- ******  
- title demo:cs amp
-
- ****** circuit name directory
- circuit number to circuit name directory
-   number circuitname                     definition         multiplier
-        0 main circuit
-        1 xcs.                            cs_amp             1.00 
-
- **warning** It is recommended that you set start explicitly:
-             .TRAN tstep tstop START=val
-
-
-  **warning** More warning messages are suppressed. Set option WARNLIMIT to increase the limit.
-  
-      
- *****************************************************************
- ******  option summary
- ******
- runlvl  = 5         bypass  = 2.0000    
-  Opening plot unit= 15
- file=cs_amp.pa0
-
- **info** dc convergence successful at Newton-Raphson method 
- ******  
- title demo:cs amp
-
- ****** operating point information tnom=  25.000 temp=  25.000 ******
- ****** operating point status is all       simulation time is     0.     
-    node    =voltage      node    =voltage      node    =voltage
-
- +0:ip      = 500.0000m 0:op      = 124.3593m 0:vdd     =   1.0000 
-
-
- **** voltage sources
+  **** voltage sources
 
  subckt                        
  element  0:vvin     0:vvdd    
   volts    500.0000m    1.0000 
-  current  -14.3864n   -1.7513m
-  power      7.1932n    1.7513m
+  current  -13.0394n   -1.8822m
+  power      6.5197n    1.8822m
 
-     total voltage source power dissipation=    1.7513m       watts
+     total voltage source power dissipation=    1.8822m       watts
 
 
 
@@ -77,10 +14,10 @@
 
  subckt   xcs       
  element  1:rrl     
-  r value  500.0000 
-  v drop   875.6407m
-  current    1.7513m
-  power      1.5335m
+  r value  400.0000 
+  v drop   752.8693m
+  current    1.8822m
+  power      1.4170m
 
 
 
@@ -91,26 +28,26 @@
  element  1:mmn1    
  model    0:nmos_vtg
  region     Saturati
-  id         1.7513m
-  ibs      5.148e-23
-  ibd     -134.2803f
+  id         1.8822m
+  ibs      5.253e-23
+  ibd     -257.1300f
   vgs      500.0000m
-  vds      124.3593m
+  vds      247.1307m
   vbs        0.     
-  vth      410.9164m
-  vdsat    114.0247m
-  vod       89.0836m
-  beta     365.7605m
+  vth      410.4291m
+  vdsat    114.3100m
+  vod       89.5709m
+  beta     366.0038m
   gam eff  400.0000m
-  gm        20.9166m
-  gds        3.0850m
-  gmb        4.9888m
-  cdtot     59.3213f
-  cgtot    156.4847f
-  cstot    130.5541f
-  cbtot    105.0463f
-  cgs      114.5729f
-  cgd       29.7662f
+  gm        23.8386m
+  gds      398.8535u
+  gmb        5.6372m
+  cdtot     56.5601f
+  cgtot    155.3335f
+  cstot    130.6046f
+  cbtot    103.8978f
+  cgs      114.6355f
+  cgd       28.4488f
 
 
 
@@ -120,9 +57,9 @@
 
  ****     small-signal transfer characteristics
 
-      v(op)/vvin                               =   -4.1133 
-      input resistance at             vvin     =    4.2321x
-      output resistance at v(op)               =  196.6546 
+      v(op)/vvin                               =   -8.2233 
+      input resistance at             vvin     =    4.2116x
+      output resistance at v(op)               =  344.9612 
 
 
 
@@ -130,78 +67,21 @@
  title demo:cs amp
 
  ****** ac analysis tnom=  25.000 temp=  25.000 ******
- gain=  12.2838     at=   1.0000k
+ gain=  18.3009     at=   1.0000k
              from=   1.0000k    to= 100.0000y
- bandwidth_3db=   3.3846g
- phase_margin=  63.0853 
+ bandwidth_3db=   2.0379g
+ phase_margin=  51.1847 
  ******
  title demo:cs amp
 
  ****** transient analysis tnom=  25.000 temp=  25.000 ******
- max_op= 553.8320m    at= 750.0000n
+ max_op= 329.5559m    at= 750.0000n
              from=  15.0000n    to=   1.0000u
- max_ip= 554.5000m    at= 250.0000n
+ max_ip= 510.0000m    at= 250.0000n
              from=  15.0000n    to=   1.0000u
- min_op=  56.8356m    at= 250.0000n
+ min_op= 170.9072m    at= 250.0000n
              from=  15.0000n    to=   1.0000u
- min_ip= 445.5000m    at= 750.0000n
+ min_ip= 490.0000m    at= 750.0000n
              from=  15.0000n    to=   1.0000u
- vpp_op= 496.9964m
- vdc_out= 305.3338m
-
-          ***** job concluded
- ******  
- title demo:cs amp
-
- ****** job statistics summary tnom=  25.000 temp=  25.000 ******
-  
-  
- ******  Machine Information  ******
- CPU:
- model name	: Intel(R) Xeon(R) CPU           E5645  @ 2.40GHz
- cpu MHz	: 1596.000
-  
- OS:
- Linux version 2.6.18-238.el5 (mockbuild@x86-012.build.bos.redhat.com) (gcc version 4.1.2 20080704 (Red Hat 4.1.2-50)) #1 SMP Sun Dec 19 14:22:44 EST 2010
-
-
-  ******  HSPICE Threads Information  ******
-
-  Command Line Threads Count :     1
-  Available CPU Count        :    24
-  Actual Threads Count       :     1
-
-
-  ******  Circuit Statistics  ******
-  # nodes       =       8 # elements   =       5
-  # resistors   =       1 # capacitors =       1 # inductors   =       0
-  # mutual_inds =       0 # vccs       =       0 # vcvs        =       0
-  # cccs        =       0 # ccvs       =       0 # volt_srcs   =       2
-  # curr_srcs   =       0 # diodes     =       0 # bjts        =       0
-  # jfets       =       0 # mosfets    =       1 # U elements  =       0
-  # T elements  =       0 # W elements =       0 # B elements  =       0
-  # S elements  =       0 # P elements =       0 # va device   =       0
-  # vector_srcs =       0 # N elements =       0
-
-
-  ******  Runtime Statistics (seconds)  ******
-
-  analysis           time    # points   tot. iter  conv.iter
-  op point           0.02           1           8
-  ac analysis        0.02        1401        1401
-  transient          0.01        9901         211          90 rev=        16
-  readin             0.01
-  errchk             0.01
-  setup              0.00
-  output             0.00
-
-
-           peak memory used        193.26 megabytes
-           total cpu time            0.07 seconds
-           total elapsed time        0.54 seconds
-           job started at     22:59:17 10/24/2021
-           job ended   at     22:59:18 10/24/2021
-
-
- lic: Release hspice token(s) 
- lic: total license checkout elapse time:        0.48(s)
+ vpp_op= 158.6487m
+ vdc_out= 250.2316m
