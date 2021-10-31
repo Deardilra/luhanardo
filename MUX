@@ -1,0 +1,80 @@
+.TITLE DEMO: MUX
+************************************************************************
+.SUBCKT AND3 GND IA IB IC OP VDD
+*.PININFO IA:I IB:I IC:I OP:O GND:B VDD:B
+MM5 net18 IC GND GND NMOS_VTG W=90n L=50n m=1
+MM3 net7 IA net19 net19 NMOS_VTG W=90n L=50n m=1
+MM4 net19 IB net18 net18 NMOS_VTG W=90n L=50n m=1
+MM6 OP net7 GND GND NMOS_VTG W=90n L=50n m=1
+MM1 net7 IB VDD VDD PMOS_VTG W=100n L=50n m=1
+MM0 net7 IA VDD VDD PMOS_VTG W=100n L=50n m=1
+MM2 net7 IC VDD VDD PMOS_VTG W=100n L=50n m=1
+MM7 OP net7 VDD VDD PMOS_VTG W=119n L=50n m=1
+.ENDS
+
+************************************************************************
+
+.SUBCKT inv GND IN OUT VDD
+*.PININFO IN:I OUT:O GND:B VDD:B
+MM1 OUT IN GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OUT IN VDD VDD PMOS_VTG W=119n L=90n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT OR4 GND IA IB IC ID OP VDD
+*.PININFO IA:I IB:I IC:I ID:I OP:O GND:B VDD:B
+MM9 OP net09 GND GND NMOS_VTG W=90n L=50n m=1
+MM0 net09 IA GND GND NMOS_VTG W=90n L=50n m=1
+MM1 net09 IB GND GND NMOS_VTG W=90n L=50n m=1
+MM2 net09 IC GND GND NMOS_VTG W=90n L=50n m=1
+MM3 net09 ID GND GND NMOS_VTG W=90n L=50n m=1
+MM8 OP net09 VDD VDD PMOS_VTG W=119n L=50n m=1
+MM7 net21 IA VDD VDD PMOS_VTG W=100n L=50n m=1
+MM6 net20 IB net21 net21 PMOS_VTG W=100n L=50n m=1
+MM5 net19 IC net20 net20 PMOS_VTG W=100n L=50n m=1
+MM4 net09 ID net19 net19 PMOS_VTG W=100n L=50n m=1
+.ENDS
+************************************************************************
+
+.SUBCKT MUX GND I0 I1 I2 I3 OP S0 S1 VDD
+*.PININFO I0:I I1:I I2:I I3:I S0:I S1:I OP:O GND:B VDD:B
+XAnd5 GND I0 S1_bar S0_bar net18 VDD / AND3
+XAnd3 GND I1 S1_bar S0 net16 VDD / AND3
+XAnd2 GND I2 S1 S0_bar net15 VDD / AND3
+XAnd1 GND I3 S1 S0 net17 VDD / AND3
+XI5 GND S0 S0_bar VDD / inv
+XI4 GND S1 S1_bar VDD / inv
+XI6 GND net17 net15 net16 net18 OP VDD / OR4
+.ENDS
+
+
+***** Process and Temperature *****
+
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+
+*******************************************************
+Xunit GND I0 I1 I2 I3 OP S0 S1 VDD MUX
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VS0 S1 GND PULSE(0V VSUP 10n 0.1n 0.1n 9n 20n) 
+VS1 S0 GND PULSE(0V VSUP 5n 0.1n 0.1n 10n 20n)
+VI0 I0 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 20n) 
+VI1 I1 GND PULSE(0V VSUP 5.5n 0.1n 0.1n 4n 20n)
+VI2 I2 GND PULSE(0V VSUP 15.5n 0.1n 0.1n 4n 20n) 
+VI3 I3 GND PULSE(0V VSUP 10.5n 0.1n 0.1n 4n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+***** Analysis *****
+.TRAN 0.001n 100n 
+.END $ End-of-File
