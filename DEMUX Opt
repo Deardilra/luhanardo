@@ -1,0 +1,54 @@
+.TITLE DEMO: DEMUX_opt
+************************************************************************
+.SUBCKT TG C GND IP OP VDD
+*.PININFO C:I IP:I OP:O GND:B VDD:B
+MMP IP net17 OP VDD PMOS_VTG W=100n L=50n m=1
+MM1 net17 C VDD VDD PMOS_VTG W=119n L=50n m=1
+MM2 net17 C GND GND NMOS_VTG W=90n L=50n m=1
+MM0 IP C OP GND NMOS_VTG W=100n L=50n m=1
+.ENDS
+************************************************************************
+.SUBCKT inv GND IN OUT VDD
+*.PININFO IN:I OUT:O GND:B VDD:B
+MM1 OUT IN GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OUT IN VDD VDD PMOS_VTG W=119n L=90n m=1
+.ENDS
+************************************************************************
+.SUBCKT Demux_opt D0 D1 D2 D3 GND IP S0 S1 VDD
+*.PININFO IP:I S0:I S1:I D0:O D1:O D2:O D3:O GND:B VDD:B
+XTG4 S0 GND net03 D3 VDD / TG
+XTG3 S0_bar GND net03 D2 VDD / TG
+XTG2 S0 GND net13 D1 VDD / TG
+XTG1 S0_bar GND net13 D0 VDD / TG
+XTG5 S1 GND IP net03 VDD / TG
+XTG6 S1_bar GND IP net13 VDD / TG
+Xnot2 GND S0 S0_bar VDD / inv
+Xnot1 GND S1 S1_bar VDD / inv
+.ENDS
+***** Process and Temperature *****
+
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+
+*******************************************************
+Xunit D0 D1 D2 D3 GND IP S0 S1 VDD Demux_opt
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VS0 S0 GND PULSE(0V VSUP 1n 0.1n 0.1n 9n 20n) 
+VS1 S1 GND PULSE(0V VSUP 4n 0.1n 0.1n 9n 20n)
+VIP IP GND 1V
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+***** Analysis *****
+.TRAN 0.001n 100n 
+.END $ End-of-File
