@@ -1,0 +1,42 @@
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: buffer.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0112        -7.959e-03          1.0192         1.521e-11      
+  1.458e-11         25.0000        1               
+*********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: buffer.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0103        -7.279e-03          1.0176         1.467e-11      
+  1.403e-11         25.0000        2               
+*********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: buffer.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0140        -1.014e-02          1.0241         1.598e-11      
+  1.513e-11         25.0000        3               
+
+Origin
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: lab2 buffer'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0169        -1.128e-02          1.0282         7.191e-12      
+  6.716e-12         25.0000        1               
+*********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: lab2 buffer'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0139        -7.739e-03          1.0217         6.936e-12      
+  6.569e-12         25.0000        2               
+*********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: lab2 buffer'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0203        -1.338e-02          1.0337         7.528e-12      
+  6.976e-12         25.0000        3               
