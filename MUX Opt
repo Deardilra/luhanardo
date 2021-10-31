@@ -1,0 +1,60 @@
+.TITLE DEMO: MUX
+************************************************************************
+.SUBCKT TG C GND IP OP VDD
+*.PININFO C:I IP:I OP:O GND:B VDD:B
+MMP IP net17 OP VDD PMOS_VTG W=100n L=50n m=1
+MM1 net17 C VDD VDD PMOS_VTG W=119n L=50n m=1
+MM2 net17 C GND GND NMOS_VTG W=90n L=50n m=1
+MM0 IP C OP GND NMOS_VTG W=100n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT inv GND IN OUT VDD
+*.PININFO IN:I OUT:O GND:B VDD:B
+MM1 OUT IN GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OUT IN VDD VDD PMOS_VTG W=119n L=90n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT MUX_opt GND I0 I1 I2 I3 OP S0 S1 VDD
+*.PININFO I0:O I1:O I2:O I3:O OP:O S0:O S1:O GND:B VDD:B
+XTG6 S1 GND net9 OP VDD / TG
+XTG5 S1_bar GND net10 OP VDD / TG
+XTG4 S0 GND I3 net9 VDD / TG
+XTG3 S0_bar GND I2 net9 VDD / TG
+XTG2 S0 GND I1 net10 VDD / TG
+XTG1 S0_bar GND I0 net10 VDD / TG
+XI6 GND S0 S0_bar VDD / inv
+XI5 GND S1 S1_bar VDD / inv
+.ENDS
+
+***** Process and Temperature *****
+
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+
+*******************************************************
+Xunit GND I0 I1 I2 I3 OP S0 S1 VDD MUX_opt
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+***** Supply and Stimuli *****
+
+VS0 S1 GND PULSE(0V VSUP 10n 0.1n 0.1n 9n 20n) 
+VS1 S0 GND PULSE(0V VSUP 5n 0.1n 0.1n 10n 20n)
+VI0 I0 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 20n) 
+VI1 I1 GND PULSE(0V VSUP 5.5n 0.1n 0.1n 4n 20n)
+VI2 I2 GND PULSE(0V VSUP 15.5n 0.1n 0.1n 4n 20n) 
+VI3 I3 GND PULSE(0V VSUP 10.5n 0.1n 0.1n 4n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+***** Analysis *****
+.TRAN 0.001n 100n 
+.END $ End-of-File
