@@ -1,0 +1,59 @@
+* File: INVX1.pex.netlist
+* Created: Fri Oct 29 16:53:07 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "INVX1.pex.netlist.pex"
+.subckt INVX1  IN VDD GND OUT
+* 
+* OUT	OUT
+* GND	GND
+* VDD	VDD
+* IN	IN
+M0 N_OUT_M0_d N_IN_M0_g N_GND_M0_s N_GND_M0_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=1.395e-14 AS=1.215e-14 PD=4.9e-07 PS=4.5e-07
+M1 N_OUT_M1_d N_IN_M1_g N_VDD_M1_s N_VDD_M1_b PMOS_VTG L=5.25e-08 W=1.325e-07
++ AD=2.2525e-14 AS=2.15312e-14 PD=6.05e-07 PS=5.9e-07
+*
+.include "INVX1.pex.netlist.INVX1.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+
+***** Supply and Stimuli *****
+VVDD VDD GND 1V
+VIN IN GND PULSE(0V 1V 0n 0.1n 0.1n 9n 20n)
+******Call Subckt******************
+XINVX1 IN VDD GND OUT INVX1
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+
+***** Analysis *****
+.TRAN 1p 100n 
+
+***** VMAX, VMIN, VPP *****
+.MEAS TRAN MAX_OUT MAX V(OUT) FROM=15n TO=100n 
+.MEAS TRAN MIN_OUT MIN V(OUT) FROM=15n TO=100n 
+.MEAS TRAN VPP_OUT PARAM='MAX_OUT-MIN_OUT'  
+ 
+******Rise time**************
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='VPP_OUT*0.1' TD=10n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='VPP_OUT*0.9' TD=10n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='VPP_OUT*0.9' TD=10n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='VPP_OUT*0.1' TD=10n Fall=1  
+*****************************
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+
+.END
