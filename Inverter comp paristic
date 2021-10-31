@@ -1,0 +1,42 @@
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: invx1.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0057        -4.157e-03          1.0098         2.575e-11      
+  2.445e-11         25.0000        1               
+********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: invx1.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0051        -3.845e-03          1.0090         2.555e-11      
+  2.466e-11         25.0000        2               
+********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: invx1.pex.netlist'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0064        -4.491e-03          1.0109         2.647e-11      
+  2.514e-11         25.0000        3               
+
+Origin
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title lab2'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0049        -3.348e-03          1.0083         1.542e-11      
+  1.522e-11         25.0000        1               
+********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title lab2'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0049        -3.149e-03          1.0080         1.561e-11      
+  1.570e-11         25.0000        2               
+********************************************************************
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title lab2'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           temper           alter#          
+    1.0057        -4.039e-03          1.0097         1.530e-11      
+  1.476e-11         25.0000        3               
