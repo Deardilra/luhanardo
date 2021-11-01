@@ -1,0 +1,91 @@
+.TITLE DEMO: Sub-circuit (multiplexer)
+
+***** multiplexer *****
+
+.SUBCKT nand3 GND IA IB IC OP VDD
+*.PININFO IA:I IB:I IC:I OP:O GND:B VDD:B
+MM3 OP IA net011 net011 NMOS_VTG W=90n L=50n m=1
+MM4 net011 IB net010 net010 NMOS_VTG W=90n L=50n m=1
+MM5 net010 IC GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OP IA VDD VDD PMOS_VTG W=90n L=50n m=1
+MM2 OP IC VDD VDD PMOS_VTG W=90n L=50n m=1
+MM1 OP IB VDD VDD PMOS_VTG W=90n L=50n m=1
+.ENDS
+
+************************************************************************
+* Library Name: lab4
+* Cell Name:    nand4
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT nand4 GND IA IB IC ID OP VDD
+*.PININFO IA:I IB:I IC:I ID:O OP:O GND:B VDD:B
+MM7 net04 ID GND GND NMOS_VTG W=90n L=50n m=1
+MM3 OP IA net28 net28 NMOS_VTG W=90n L=50n m=1
+MM4 net28 IB net27 net27 NMOS_VTG W=90n L=50n m=1
+MM5 net27 IC net04 net04 NMOS_VTG W=90n L=50n m=1
+MM6 OP ID VDD VDD PMOS_VTG W=90n L=50n m=1
+MM0 OP IA VDD VDD PMOS_VTG W=90n L=50n m=1
+MM2 OP IC VDD VDD PMOS_VTG W=90n L=50n m=1
+MM1 OP IB VDD VDD PMOS_VTG W=90n L=50n m=1
+.ENDS
+
+************************************************************************
+* Library Name: lab4
+* Cell Name:    not
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT not GND IP OP VDD
+*.PININFO IP:I OP:O GND:B VDD:B
+MM0 OP IP GND GND NMOS_VTG W=90n L=50n m=1
+MM1 OP IP VDD VDD PMOS_VTG W=90n L=50n m=1
+.ENDS
+
+************************************************************************
+* Library Name: lab4
+* Cell Name:    multiplexer
+* View Name:    schematic
+************************************************************************
+
+.SUBCKT multiplexer GND I0 I1 I2 I3 OP S0 S1 VDD
+*.PININFO I0:I I1:I I2:I I3:I S0:I S1:I OP:O GND:B VDD:B
+XI8 GND I2 S1 net34 net3 VDD / nand3
+XI9 GND I1 net38 S0 net9 VDD / nand3
+XI7 GND I3 S1 S0 net28 VDD / nand3
+XI10 GND I0 net38 net34 net014 VDD / nand3
+XI11 GND net28 net3 net9 net014 OP VDD / nand4
+XI6 GND S0 net34 VDD / not
+XI5 GND S1 net38 VDD / not
+.ENDS
+
+***** Process and Temperature *****
+
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+
+*******************************************************
+Xunit GND I0 I1 I2 I3 OP S0 S1 VDD multiplexer
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VS0 S1 GND PULSE(0V VSUP 10n 0.1n 0.1n 9n 20n) 
+VS1 S0 GND PULSE(0V VSUP 5n 0.1n 0.1n 10n 20n)
+VI0 I0 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 20n) 
+VI1 I1 GND PULSE(0V VSUP 5.5n 0.1n 0.1n 4n 20n)
+VI2 I2 GND PULSE(0V VSUP 15.5n 0.1n 0.1n 4n 20n) 
+VI3 I3 GND PULSE(0V VSUP 10.5n 0.1n 0.1n 4n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+***** Analysis *****
+.TRAN 0.001n 100n 
+.END $ End-of-File
