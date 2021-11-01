@@ -9,6 +9,7 @@ MMPU OUT IN VDD VDD PMOS_VTG W=132.5n L=52.5n m=1
 .PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
 .UNPROTECT
+.TEMP 25
 ***************************
 
 ***** Parameter *****
@@ -43,8 +44,9 @@ VIN IN GND PULSE(0V 1V 0n 0.1n 0.1n 9n 20n)
 .ALTER
 .DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.TEMP -40
 .ALTER
 .DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
-
+.TEMP 125
 .END
