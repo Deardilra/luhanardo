@@ -23,7 +23,7 @@ M1 N_OUT_M1_d N_IN_M1_g N_VDD_M1_s N_VDD_M1_b PMOS_VTG L=5.25e-08 W=1.325e-07
 .PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
 .UNPROTECT
-
+.TEMP 25
 ***** Supply and Stimuli *****
 VVDD VDD GND 1V
 VIN IN GND PULSE(0V 1V 0n 0.1n 0.1n 9n 20n)
@@ -52,8 +52,9 @@ XINVX1 IN VDD GND OUT INVX1
 .ALTER
 .DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.TEMP -40
 .ALTER
 .DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
 .LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
-
+.TEMP 125
 .END
