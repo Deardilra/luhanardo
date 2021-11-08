@@ -1,0 +1,70 @@
+.TITLE DEMO: Sub-circuit (SR LATCH)
+************************************************************************
+.SUBCKT NAND2 GND IN1 IN2 VDD out
+MM1 out IN2 VDD VDD PMOS_VTG W=100n L=50n m=1
+MM0 out IN1 VDD VDD PMOS_VTG W=100n L=50n m=1
+MM3 net12 IN2 GND GND NMOS_VTG W=90n L=50n m=1
+MM2 out IN1 net12 net12 NMOS_VTG W=90n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT SR_Latch CLK GND Q Q_bar R S VDD
+XI3 GND Q net11 VDD Q_bar / NAND2
+XI2 GND net12 Q_bar VDD Q / NAND2
+XI1 GND CLK R VDD net11 / NAND2
+XI0 GND S CLK VDD net12 / NAND2
+.ENDS
+
+***** Process and Temperature *****
+
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+.TEMP 25
+*******************************************************
+Xunit CLK GND Q Q_bar R S VDD SR_Latch
+***** Parameter *****
+.PARAM VSUP = 1.0V
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VCLK CLK GND PULSE(0V VSUP 0 0.1n 0.1n 15n 20n)
+VS S GND PULSE(0V VSUP 1n 0.1n 0.1n 9n 20n) 
+VR R GND PULSE(0V VSUP 4n 0.1n 0.1n 9n 20n)
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+
+***** VMAX, VMIN, VPP *****
+.MEAS TRAN MAX_OUT MAX V(Q) FROM=15n TO=100n 
+.MEAS TRAN MIN_OUT MIN V(Q) FROM=15n TO=100n 
+.MEAS TRAN VPP_OUT PARAM='MAX_OUT-MIN_OUT'    
+
+******Rise time**************
+.MEAS TRAN TR_OUT TRIG V(Q) VAL='1*0.1' TD=20n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(Q) VAL='1*0.9' TD=20n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(Q) VAL='1*0.9' TD=20n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(Q) VAL='1*0.1' TD=20n Fall=1  
+*****************************
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(S) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(Q) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(S) VAL='1*0.5' TD=20n Fall=1 
++		TARG V(Q) VAL='1*0.5' TD=20n Fall=1
+
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.TEMP -40
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+.TEMP 125
+
+.END $ End-of-File
