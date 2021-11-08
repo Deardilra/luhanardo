@@ -1,0 +1,63 @@
+1. NAND
+origin
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: sub-circuit (nand-2)'
+ tr_out           tf_out           tplh             tphl            
+ delta_r          delta_f          temper           alter#          
+  3.644e-11        3.218e-11        2.514e-11        2.461e-11      
+   11.6868          13.2334          25.0000        1  
+pex   
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: nand2.pex.netlist'
+ tr_out           tf_out           tplh             tphl            
+ delta_r          delta_f          temper           alter#          
+  4.837e-11        4.916e-11        3.764e-11        3.462e-11      
+   -1.6293          -1.6031          25.0000        1   
+   
+2. AND
+origin
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: sub-circuit (and-2)'
+ tr_out           tf_out           tplh             tphl            
+ temper           alter#          
+  2.052e-11        1.982e-11        1.287e-10        3.266e-11      
+   25.0000        1               
+pex
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: and2_1106.pex.netlist'
+ tr_out           tf_out           tplh             tphl            
+ temper           alter#          
+  2.952e-11        2.708e-11        1.495e-10        4.799e-11      
+   25.0000        1     
+
+3. NOR
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: sub-circuit (nor-2)'
+ tr_out           tf_out           tphl             tplh            
+ delta_r          delta_f          temper           alter#          
+  5.010e-11        2.999e-11        1.798e-11        3.596e-11      
+   40.1299          67.0284          25.0000        1               
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: nor2.pex.netlist'
+ tr_out           tf_out           tphl             tplh            
+ delta_r          delta_f          temper           alter#          
+  6.278e-11        4.003e-11        2.857e-11        5.006e-11      
+   36.2289          56.8108          25.0000        1               
+
+4.OR
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE 'title demo: sub-circuit (or-2)'
+ tr_out           tf_out           tplh             tphl            
+ delta_r          delta_f          temper           alter#          
+  1.803e-11        1.959e-11        2.157e-11        3.670e-11      
+   -8.6950          -7.9994          25.0000        1          
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '* file: or2.pex.netlist'
+ tr_out           tf_out           tplh             tphl            
+ delta_r          delta_f          temper           alter#          
+  2.728e-11        3.062e-11        4.342e-11        6.482e-11      
+  -12.2227         -10.8915          25.0000        1               
+     
+
+
+          
