@@ -1,0 +1,50 @@
+SR Latch
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (sr latch)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0444        -2.232e-02          1.0667         1.327e-11      
+  1.256e-11        2.358e-11        2.309e-11         25.0000       
+1               
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (sr latch)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0334        -1.864e-02          1.0520         8.508e-12      
+  8.499e-12        1.658e-11        1.674e-11        -40.0000       
+2 
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (sr latch)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0535        -2.801e-02          1.0815         2.584e-11      
+  2.324e-11        4.054e-11        3.852e-11        125.0000       
+3               
+DFF
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (dff)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0216        -1.911e-02          1.0408         5.896e-12      
+  5.610e-12        6.353e-11        5.960e-11         25.0000       
+1               
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (dff)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0145        -1.617e-02          1.0307         3.476e-12      
+  3.580e-12        4.304e-11        4.076e-11        -40.0000       
+2               
+$DATA1 SOURCE='HSPICE' VERSION='L-2016.06-SP1 linux64' PARAM_COUNT=0
+.TITLE '.title demo: sub-circuit (dff)'
+ max_out          min_out          vpp_out          tr_out          
+ tf_out           tplh             tphl             temper          
+ alter#          
+    1.0251        -2.185e-02          1.0470         1.260e-11      
+  1.145e-11        1.151e-10        1.071e-10        125.0000       
+3               
