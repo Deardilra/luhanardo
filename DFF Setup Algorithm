@@ -1,0 +1,83 @@
+.TITLE sub-circuit (DFF)
+
+***********************************************************************
+.SUBCKT TG C GND IP OP VDD
+MMP IP net17 OP VDD PMOS_VTG W=100n L=50n m=1
+MM1 net17 C VDD VDD PMOS_VTG W=119n L=50n m=1
+MM2 net17 C GND GND NMOS_VTG W=90n L=50n m=1
+MM0 IP C OP GND NMOS_VTG W=100n L=50n m=1
+.ENDS
+
+
+************************************************************************
+.SUBCKT inv GND IN OUT VDD
+*.PININFO IN:I OUT:O GND:B VDD:B
+MM1 OUT IN GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OUT IN VDD VDD PMOS_VTG W=119n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT NAND2 GND IN1 IN2 VDD out
+MM1 out IN2 VDD VDD PMOS_VTG  W=100n L=50n m=1
+MM0 out IN1 VDD VDD PMOS_VTG  W=100n L=50n m=1
+MM3 net12 IN2 GND GND NMOS_VTG  W=100n L=50n m=1
+MM2 out IN1 net12 net12 NMOS_VTG  W=100n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT DFF CLK D GND Q Q_bar RSTN VDD
+XI3 CK_INT_B GND net13 net12 VDD / TG
+XI2 CK_INT GND net11 net13 VDD / TG
+XI1 CK_INT GND net10 net15 VDD / TG
+XI0 CK_INT_B GND net18 net10 VDD / TG
+XI12 GND CK_INT_B CK_INT VDD / inv
+XI11 GND CLK CK_INT_B VDD / inv
+XI8 GND net14 Q VDD / inv
+XI7 GND net12 Q_bar VDD / inv
+XI6 GND net14 net12 VDD / inv
+XI5 GND D net18 VDD / inv
+XI4 GND net10 net11 VDD / inv
+XI10 GND RSTN net13 VDD net14 / NAND2
+XI9 GND RSTN net11 VDD net15 / NAND2
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT      $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+.TEMP 25
+***********************************
+
+***** Parameter *****
+.PARAM VSUP   =  1.0V
+.PARAM TIME_0 =  0ps
+.PARAM TIME_1 = 'TIME_0 + 25ps'
+*********************
+
+***** Supply and Stimuli *****
+VVDD  VDD  GND VSUP
+VCLK  CLK  GND PWL( 0n 0V 1000ps 0V 1025ps VSUP) 
+VDATA D    GND PWL( 0n 0V TIME_0 0V TIME_1 VSUP)
+VRSTN RSTN GND PWL( 0n 0V 100ps  0V 101ps  VSUP)
+******************************
+
+******************************
+xDFF CLK D GND Q Q_bar RSTN VDD DFF
+******************************
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance.
+.OPTION PROBE	 $ Specify quantities would be printed.
+***************************
+
+***** Analysis *****
+.TRAN 1p 2n SWEEP TIME_0 950ps 1000ps 1ps $ Transient analysis with temperature sweeping (.tr)
+.PROBE TRAN V(*)
+
+******SETUP TIME**************
+.MEAS TRAN clk2q TRIG V(CLK) VAL=0.9V TD=0.9n RISE=1 TARG V(Q) VAL=0.9 TD=0.9n RISE=1 $ CLK to Q delay
+******************************
+
+.END $ End-of-File
