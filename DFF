@@ -1,0 +1,95 @@
+.TITLE DEMO: Sub-circuit (DFF)
+***********************************************************************
+.SUBCKT TG C GND IP OP VDD
+MMP IP net17 OP VDD PMOS_VTG W=100n L=50n m=1
+MM1 net17 C VDD VDD PMOS_VTG W=119n L=50n m=1
+MM2 net17 C GND GND NMOS_VTG W=90n L=50n m=1
+MM0 IP C OP GND NMOS_VTG W=100n L=50n m=1
+.ENDS
+
+
+************************************************************************
+.SUBCKT inv GND IN OUT VDD
+*.PININFO IN:I OUT:O GND:B VDD:B
+MM1 OUT IN GND GND NMOS_VTG W=90n L=50n m=1
+MM0 OUT IN VDD VDD PMOS_VTG W=119n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT NAND2 GND IN1 IN2 VDD out
+MM1 out IN2 VDD VDD PMOS_VTG  W=100n L=50n m=1
+MM0 out IN1 VDD VDD PMOS_VTG  W=100n L=50n m=1
+MM3 net12 IN2 GND GND NMOS_VTG  W=100n L=50n m=1
+MM2 out IN1 net12 net12 NMOS_VTG  W=100n L=50n m=1
+.ENDS
+
+************************************************************************
+.SUBCKT DFF CLK D GND Q Q_bar RSTN VDD
+XI3 CK_INT_B GND net13 net12 VDD / TG
+XI2 CK_INT GND net11 net13 VDD / TG
+XI1 CK_INT GND net10 net15 VDD / TG
+XI0 CK_INT_B GND net18 net10 VDD / TG
+XI12 GND CK_INT_B CK_INT VDD / inv
+XI11 GND CLK CK_INT_B VDD / inv
+XI8 GND net14 Q VDD / inv
+XI7 GND net12 Q_bar VDD / inv
+XI6 GND net14 net12 VDD / inv
+XI5 GND D net18 VDD / inv
+XI4 GND net10 net11 VDD / inv
+XI10 GND RSTN net13 VDD net14 / NAND2
+XI9 GND RSTN net11 VDD net15 / NAND2
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+.TEMP 25
+*******************************************************
+Xunit CLK D GND Q Q_bar RSTN VDD DFF
+***** Parameter *****
+.PARAM VSUP = 1.0V
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VCLK CLK GND PULSE(0V VSUP 0n 0.1n 0.1n 2n 5n)
+VRSTN RSTN GND PULSE(0V VSUP 2n 0.1n 0.1n 40n 50n) 
+VD D GND PULSE(0V VSUP 4n 0.1n 0.1n 9n 20n)
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+
+***** VMAX, VMIN, VPP *****
+.MEAS TRAN MAX_OUT MAX V(Q) FROM=15n TO=100n 
+.MEAS TRAN MIN_OUT MIN V(Q) FROM=15n TO=100n 
+.MEAS TRAN VPP_OUT PARAM='MAX_OUT-MIN_OUT'    
+
+******Rise time**************
+.MEAS TRAN TR_OUT TRIG V(Q) VAL='1*0.1' TD=20n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(Q) VAL='1*0.9' TD=20n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(Q) VAL='1*0.9' TD=20n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(Q) VAL='1*0.1' TD=20n Fall=1  
+*****************************
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(CLK) VAL='1*0.5' TD=5n Rise=1 
++		TARG V(Q) VAL='1*0.5' TD=5n Rise=1
+.MEAS TRAN Tphl TRIG V(CLK) VAL='1*0.5' TD=15n Rise=1 
++		TARG V(Q) VAL='1*0.5' TD=15n Fall=1
+
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.TEMP -40
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+.TEMP 125
+
+.END $ End-of-File
