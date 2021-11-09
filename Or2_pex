@@ -1,0 +1,79 @@
+* File: Or2.pex.netlist
+* Created: Thu Nov  4 14:17:22 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "Or2.pex.netlist.pex"
+.subckt OR2  IN1 IN2 VDD GND OUT
+* 
+* OUT	OUT
+* GND	GND
+* VDD	VDD
+* IN2	IN2
+* IN1	IN1
+mXI0/MM2 N_NET13_XI0/MM2_d N_IN1_XI0/MM2_g N_GND_XI0/MM2_s N_GND_XI0/MM2_b
++ NMOS_VTG L=5e-08 W=1.1e-07 AD=1.87e-14 AS=1.4025e-14 PD=5.6e-07 PS=4.75e-07
+mXI0/MM3 N_NET13_XI0/MM2_d N_IN2_XI0/MM3_g N_GND_XI0/MM3_s N_GND_XI0/MM2_b
++ NMOS_VTG L=5e-08 W=1.1e-07 AD=1.87e-14 AS=1.2925e-14 PD=5.6e-07 PS=4.55e-07
+MM1 N_OUT_MM1_d N_NET13_MM1_g N_GND_MM1_s N_GND_MM1_b NMOS_VTG L=5.25e-08
++ W=9e-08 AD=1.395e-14 AS=1.215e-14 PD=4.9e-07 PS=4.5e-07
+mXI0/MM1 XI0/NET14 N_IN1_XI0/MM1_g N_VDD_XI0/MM1_s N_VDD_XI0/MM1_b PMOS_VTG
++ L=5e-08 W=1.1e-07 AD=1.87e-14 AS=1.4025e-14 PD=5.6e-07 PS=4.75e-07
+mXI0/MM0 N_NET13_XI0/MM0_d N_IN2_XI0/MM0_g XI0/NET14 N_VDD_XI0/MM1_b PMOS_VTG
++ L=5e-08 W=1.1e-07 AD=1.2925e-14 AS=1.87e-14 PD=4.55e-07 PS=5.6e-07
+MM0 N_OUT_MM0_d N_NET13_MM0_g N_VDD_MM0_s N_VDD_MM0_b PMOS_VTG L=5.25e-08
++ W=1.325e-07 AD=2.2525e-14 AS=2.15312e-14 PD=6.05e-07 PS=5.9e-07
+*
+.include "Or2.pex.netlist.OR2.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Call Sub-circuits *****
+XO2 IN1 IN2 VDD GND OUT OR2
+CC1 OUT GND 1f
+******************.***********
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VIN1 IN1 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 10n) 
+VIN2 IN2 GND PULSE(0V VSUP 2.4n 0.1n 0.1n 9n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+********************
+
+***** Measurement *****
+***** Rise time *****
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=20n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=20n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=20n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=20n Fall=1
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(IN1) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IN1) VAL='1*0.5' TD=20n Fall=2 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
+
+.MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
+.MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
+
+.END $ End-of-File
