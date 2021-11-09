@@ -1,0 +1,74 @@
+* File: AND2_1106.pex.netlist
+* Created: Thu Nov  4 23:07:11 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "AND2_1106.pex.netlist.pex"
+.subckt AND2 IN1 IN2 VDD GND OP
+* 
+* OUT	OUT
+* GND	GND
+* VDD	VDD
+* IN2	IN2
+* IN1	IN1
+MM3 NET14 N_IN1_MM3_g N_GND_MM3_s N_GND_MM3_b NMOS_VTG L=5e-08 W=1.1e-07
++ AD=1.54e-14 AS=1.43e-14 PD=5e-07 PS=4.8e-07
+MM2 N_NET10_MM2_d N_IN2_MM2_g NET14 N_GND_MM3_b NMOS_VTG L=5e-08 W=1.1e-07
++ AD=1.155e-14 AS=1.54e-14 PD=4.3e-07 PS=5e-07
+MM5 N_OP_MM5_d N_NET10_MM5_g N_GND_MM5_s N_GND_MM5_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=1.395e-14 AS=1.215e-14 PD=4.9e-07 PS=4.5e-07
+MM0 N_NET10_MM0_d N_IN1_MM0_g N_VDD_MM0_s N_VDD_MM0_b PMOS_VTG L=5e-08
++ W=1.15e-07 AD=1.61e-14 AS=1.495e-14 PD=5.1e-07 PS=4.9e-07
+MM1 N_NET10_MM0_d N_IN2_MM1_g N_VDD_MM1_s N_VDD_MM0_b PMOS_VTG L=5e-08
++ W=1.15e-07 AD=1.61e-14 AS=1.2075e-14 PD=5.1e-07 PS=4.4e-07
+MM4 N_OP_MM4_d N_NET10_MM4_g N_VDD_MM4_s N_VDD_MM4_b PMOS_VTG L=5.25e-08
++ W=1.325e-07 AD=2.2525e-14 AS=2.15312e-14 PD=6.05e-07 PS=5.9e-07
+*
+.include "AND2_1106.pex.netlist.AND2.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VIN1 IN1 GND PULSE(0V VSUP 0n 0.1n 0.1n 20n 40n) 
+VIN2 IN2 GND PULSE(0V VSUP 0.1n 0.1n 0.1n 10n 20n)
+******************************
+
+***** Call Sub-circuits *****
+XAN2 IN1 IN2 VDD GND OP AND2
+CC1 OP GND 1f
+
+
+***** Command OUTtions *****
+.OP              $ Print OUTerating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+***** Measurement *****
+
+***** Rise time *****
+.MEAS TRAN TR_OUT TRIG V(OP) VAL='1*0.1' TD=40n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OP) VAL='1*0.9' TD=40n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(OP) VAL='1*0.9' TD=40n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OP) VAL='1*0.1' TD=40n Fall=1
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(IN1) VAL='1*0.5' TD=40n Rise=1 
++		TARG V(OP) VAL='1*0.5' TD=40n Rise=1
+.MEAS TRAN Tphl TRIG V(IN2) VAL='1*0.5' TD=40n Fall=1 
++		TARG V(OP) VAL='1*0.5' TD=40n Fall=1
+
+.END $ End-of-File
