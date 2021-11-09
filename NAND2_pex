@@ -42,7 +42,7 @@ CC1 OUT GND 1f
 ***** Supply and Stimuli *****
 VVDD VDD GND VSUP
 VIN1 IN1 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 10n) 
-VIN2 IN2 GND PULSE(0V VSUP 3n 0.1n 0.1n 9n 20n)
+VIN2 IN2 GND PULSE(0V VSUP 1n 0.1n 0.1n 4n 10n)
 
 ******************************
 
@@ -64,19 +64,20 @@ $.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
 ***** Measurement *****
 
 ***** Rise time *****
-.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=15n RISE=1 $ Rise time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.9' TD=15n RISE=1
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=20n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=20n RISE=1
 ***** Fall time *****
-.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=15n Fall=1 $ Fall time measurement of the signal 'OUT'
-+									TARG V(OUT) VAL='1*0.1' TD=15n Fall=1
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=20n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=20n Fall=1
 *****Delta time *****
 .MEAS TRAN Tplh TRIG V(IN1) VAL='1*0.5' TD=20n Fall=1 
 +		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
-.MEAS TRAN Tphl TRIG V(IN1) VAL='1*0.5' TD=20n Rise=2 
-+		TARG V(OUT) VAL='1*0.5' TD=20n Fall=2
+.MEAS TRAN Tphl TRIG V(IN2) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
 
 .MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
 .MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
 
 
 .END $ End-of-File
+
