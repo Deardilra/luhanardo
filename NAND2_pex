@@ -1,0 +1,82 @@
+* File: NAND2.pex.netlist
+* Created: Thu Nov  4 22:20:15 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "NAND2.pex.netlist.pex"
+.subckt NAND2  IN1 GND IN2 OUT VDD
+* 
+* VDD	VDD
+* OUT	OUT
+* IN2	IN2
+* GND	GND
+* IN1	IN1
+MM2 NET12 N_IN1_MM2_g N_GND_MM2_s N_GND_MM2_b NMOS_VTG L=5e-08 W=1.1e-07
++ AD=1.54e-14 AS=1.43e-14 PD=5e-07 PS=4.8e-07
+MM3 N_OUT_MM3_d N_IN2_MM3_g NET12 N_GND_MM2_b NMOS_VTG L=5e-08 W=1.1e-07
++ AD=1.155e-14 AS=1.54e-14 PD=4.3e-07 PS=5e-07
+MM0 N_OUT_MM0_d N_IN1_MM0_g N_VDD_MM0_s N_VDD_MM0_b PMOS_VTG L=5e-08 W=1.15e-07
++ AD=1.61e-14 AS=1.495e-14 PD=5.1e-07 PS=4.9e-07
+MM1 N_OUT_MM0_d N_IN2_MM1_g N_VDD_MM1_s N_VDD_MM0_b PMOS_VTG L=5e-08 W=1.15e-07
++ AD=1.61e-14 AS=1.2075e-14 PD=5.1e-07 PS=4.4e-07
+*
+.include "NAND2.pex.netlist.NAND2.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+
+***** Call Sub-circuits *****
+XN2 IN1 GND IN2 OUT VDD NAND2
+CC1 OUT GND 1f
+******************.***********
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VIN1 IN1 GND PULSE(0V VSUP 0n 0.1n 0.1n 4n 10n) 
+VIN2 IN2 GND PULSE(0V VSUP 3n 0.1n 0.1n 9n 20n)
+
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+.OPTION PROBE
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+$SWEEP x 90n 400n 1n     $ Transient analysis with temperature sweeping
+.PROBE TRAN V(*)
+$.DC VVIN 0V VSUP 0.001V $ DC analysis with temperature sweeping
+********************
+
+***** Measurement *****
+
+***** Rise time *****
+.MEAS TRAN TR_OUT TRIG V(OUT) VAL='1*0.1' TD=15n RISE=1 $ Rise time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.9' TD=15n RISE=1
+***** Fall time *****
+.MEAS TRAN TF_OUT TRIG V(OUT) VAL='1*0.9' TD=15n Fall=1 $ Fall time measurement of the signal 'OUT'
++									TARG V(OUT) VAL='1*0.1' TD=15n Fall=1
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(IN1) VAL='1*0.5' TD=20n Fall=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IN1) VAL='1*0.5' TD=20n Rise=2 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=2
+
+.MEAS TRAN DELTA_R PARAM = '(TR_OUT-TF_OUT)/TR_OUT*100'
+.MEAS TRAN DELTA_F PARAM = '(TR_OUT-TF_OUT)/TF_OUT*100'
+
+
+.END $ End-of-File
