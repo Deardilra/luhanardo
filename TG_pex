@@ -1,0 +1,68 @@
+* File: TG_1114_2050.pex.netlist
+* Created: Sun Nov 14 20:50:15 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "TG_1114_2050.pex.netlist.pex"
+.subckt TG  C C_BAR VDD GND IP OUT
+* 
+* OUT	OUT
+* IP	IP
+* GND	GND
+* VDD	VDD
+* C_BAR	C_BAR
+* C	C
+MM0 N_IP_MM0_d N_C_MM0_g N_OUT_MM0_s GND NMOS_VTG L=5e-08 W=9e-08 AD=9.9e-15
++ AS=9.9e-15 PD=4e-07 PS=4e-07
+MMP N_IP_MMP_d N_C_BAR_MMP_g N_OUT_MMP_s VDD PMOS_VTG L=5e-08 W=1.325e-07
++ AD=1.4575e-14 AS=1.4575e-14 PD=4.85e-07 PS=4.85e-07
+c_22 VDD 0 0.0258957f
+c_28 GND 0 0.0251675f
+*
+.include "TG_1114_2050.pex.netlist.TG.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+Xunit C C_BAR VDD GND IP OUT TG
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VC C GND PULSE(0V VSUP 0n 0.1n 0.1n 9.8n 20n)
+VC_bar C_bar GND PULSE(VSUP 0V 0n 0.1n 0.1n 9.8n 20n)
+VIP IP GND PULSE(0V VSUP 0.2n 0.1n 0.1n 4n 10n)
+******************************
+
+***** Command OUTtions *****
+.OP              $ Print OUTerating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+.OPTION PROBE
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+.PROBE TRAN V(*)
+********************
+
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(IP) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IP) VAL='1*0.5' TD=20n Fall=1 
++		TARG V(OUT) VAL='1*0.5' TD=20n Fall=1
+
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+
+.END $ End-of-File
