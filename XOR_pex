@@ -1,0 +1,84 @@
+* File: XOR_1112.pex.netlist
+* Created: Fri Nov 12 00:45:56 2021
+* Program "Calibre xRC"
+* Version "v2017.1_34.33"
+* 
+.include "XOR_1112.pex.netlist.pex"
+.subckt XOR  IA OP IB GND VDD
+* 
+* VDD	VDD
+* GND	GND
+* IB	IB
+* OP	OP
+* IA	IA
+MM7 N_IA_BAR_MM7_d N_IA_MM7_g N_GND_MM7_s N_GND_MM7_b NMOS_VTG L=5.25e-08
++ W=9e-08 AD=1.395e-14 AS=1.215e-14 PD=4.9e-07 PS=4.5e-07
+MM5 NET52.5 N_IB_BAR_MM5_g N_GND_MM5_s N_GND_MM7_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=1.3275e-14 AS=9.675e-15 PD=4.75e-07 PS=3.95e-07
+MM3 N_OP_MM3_d N_IA_BAR_MM3_g NET52.5 N_GND_MM7_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=2.925e-14 AS=1.3275e-14 PD=8.3e-07 PS=4.75e-07
+MMN N_OP_MM3_d N_IA_MMN_g NET52 N_GND_MM7_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=2.925e-14 AS=1.35e-14 PD=8.3e-07 PS=4.8e-07
+MM4 NET52 N_IB_MM4_g N_GND_MM4_s N_GND_MM7_b NMOS_VTG L=5.25e-08 W=9e-08
++ AD=1.35e-14 AS=9.45e-15 PD=4.8e-07 PS=3.9e-07
+MM9 N_IB_BAR_MM9_d N_IB_MM9_g N_GND_MM9_s N_GND_MM7_b NMOS_VTG L=5.25e-08
++ W=9e-08 AD=1.2825e-14 AS=1.3275e-14 PD=4.65e-07 PS=4.75e-07
+MM6 N_IA_BAR_MM6_d N_IA_MM6_g N_VDD_MM6_s N_VDD_MM6_b PMOS_VTG L=5.25e-08
++ W=1.175e-07 AD=1.82125e-14 AS=1.7625e-14 PD=5.45e-07 PS=5.35e-07
+MM0 NET012 N_IA_MM0_g N_VDD_MM0_s N_VDD_MM6_b PMOS_VTG L=5.25e-08 W=1.175e-07
++ AD=1.645e-14 AS=2.26187e-14 PD=5.15e-07 PS=6.2e-07
+MM2 N_OP_MM2_d N_IB_BAR_MM2_g NET012 N_VDD_MM6_b PMOS_VTG L=5.25e-08 W=1.175e-07
++ AD=3.43687e-14 AS=1.645e-14 PD=8.2e-07 PS=5.15e-07
+MM1 N_OP_MM2_d N_IA_BAR_MM1_g NET016 N_VDD_MM6_b PMOS_VTG L=5.25e-08 W=1.175e-07
++ AD=3.43687e-14 AS=1.70375e-14 PD=8.2e-07 PS=5.25e-07
+MMP NET016 N_IB_MMP_g N_VDD_MMP_s N_VDD_MM6_b PMOS_VTG L=5.25e-08 W=1.175e-07
++ AD=1.70375e-14 AS=1.2925e-14 PD=5.25e-07 PS=4.55e-07
+MM8 N_IB_BAR_MM8_d N_IB_MM8_g N_VDD_MM8_s N_VDD_MM6_b PMOS_VTG L=5.25e-08
++ W=1.175e-07 AD=1.70375e-14 AS=1.82125e-14 PD=5.25e-07 PS=5.45e-07
+*
+.include "XOR_1112.pex.netlist.XOR_1112.pxi"
+*
+.ends
+*
+*
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+***************************
+Xunit IA OP IB GND VDD XOR
+***** Parameter *****
+.PARAM VSUP = 1.0V
+*********************
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VIA IA GND PULSE(0V VSUP 0n 0.1n 0.1n 9n 20n) 
+VIB IB GND PULSE(0V VSUP 4n 0.1n 0.1n 9n 20n)
+******************************
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+.OPTION PROBE
+***************************
+
+***** Analysis *****
+.TRAN 0.001n 100n 
+.PROBE TRAN V(*)
+********************
+
+*****Delta time *****
+.MEAS TRAN Tplh TRIG V(IA) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OP) VAL='1*0.5' TD=20n Rise=1
+.MEAS TRAN Tphl TRIG V(IB) VAL='1*0.5' TD=20n Rise=1 
++		TARG V(OP) VAL='1*0.5' TD=20n Fall=1
+
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.ALTER
+.DEL LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' FF_VTG
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' SS_VTG
+
+.END $ End-of-File
