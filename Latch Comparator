@@ -1,0 +1,66 @@
+.TITLE DEMO:Sub-circuits (Comparator)
+************************************************************************
+.SUBCKT NAND2 GND IN1 IN2 VDD out
+*.PININFO IN1:I IN2:I out:O GND:B VDD:B
+MM1 out IN2 VDD VDD PMOS_VTG W=97.5n L=50n m=1
+MM0 out IN1 VDD VDD PMOS_VTG W=97.5n L=50n m=1
+MM3 net011 IN2 GND GND NMOS_VTG W=90n L=50n m=1
+MM2 out IN1 net011 GND NMOS_VTG W=90n L=50n m=1
+.ENDS
+
+
+************************************************************************
+.SUBCKT SR_no_clk GND Q Q_bar R S VDD
+*.PININFO R:I S:I Q:O Q_bar:O GND:B VDD:B
+XI0 GND S Q_bar VDD Q / NAND2
+XI1 GND Q R VDD Q_bar / NAND2
+.ENDS
+
+************************************************************************
+.SUBCKT Comparator_deglitch CLK GND Q Q_bar VDD VIN VIP net012 net021
+*.PININFO CLK:I VIN:I VIP:I Q:O Q_bar:O GND:B VDD:B
+MM0 net012 net021 VDD VDD PMOS_VTG W=100n L=50n m=1
+MM10 net94 CLK VDD VDD PMOS_VTG W=100n L=50n m=1
+MM9 net95 CLK VDD VDD PMOS_VTG W=100n L=50n m=1
+MM3 net021 net012 VDD VDD PMOS_VTG W=100n L=50n m=1
+MM2 net012 CLK VDD VDD PMOS_VTG W=100n L=50n m=1
+MM1 net021 CLK VDD VDD PMOS_VTG W=100n L=50n m=1
+MM8 net86 CLK GND GND NMOS_VTG W=90n L=50n m=1
+MM7 net94 VIP net86 net86 NMOS_VTG W=90n L=50n m=1
+MM6 net021 net012 net95 net95 NMOS_VTG W=90n L=50n m=1
+MM5 net95 VIN net86 net86 NMOS_VTG W=97n L=50n m=1
+MM4 net012 net021 net94 net94 NMOS_VTG W=90n L=50n m=1
+XI0 GND Q Q_bar net021 net012 VDD / SR_no_clk
+.ENDS
+
+***** Process and Temperature *****
+.PROTECT $ keep models private (so that *.lis file will not contain the information of spice model)
+.LIB '/misc/vlsicollege-data/techfile/course_college_vlsi/FreePDK45/ncsu_basekit/models/hspice/FreePDK45.l' TT_VTG
+.UNPROTECT
+.TEMP 25
+
+*******************************************************
+Xunit CLK GND Q Q_bar VDD VIN VIP VON VOP Comparator_deglitch
+
+***** Parameter *****
+.PARAM VSUP = 1.0V
+
+***** Supply and Stimuli *****
+VVDD VDD GND VSUP
+VCLK CLK GND PULSE(0V VSUP 2n 0.1n 0.1n 10n 20n)
+VVIN VIN GND 0.85V
+VVIP VIP GND x 
+$VVIP VIP GND PULSE(0V VSUP 1n 0.1n 0.1n 5n 10n)
+
+***** Command Options *****
+.OP              $ Print operating point analysis data to *.lis file
+.OPTION POST     $ Generate graph file (*.tr#, *.ms#, *.ac#)
+.OPTION ACCURATE $ Higher simulation accuracy
+.OPTION CAPTAB   $ Print node capacitance
+.OPTION PROBE
+***** Analysis *****
+.TRAN 0.001n 100n SWEEP x 0.85V 0.86V 0.0001V
+.PROBE V(*)
+.END
+
+
